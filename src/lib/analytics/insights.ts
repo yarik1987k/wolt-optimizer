@@ -40,8 +40,8 @@ export interface Insight {
 }
 
 export interface InsightsResult {
-  hypotheses: Insight[]; // up to 3, status TEST_CANDIDATE
-  observations: Insight[]; // up to 3, small samples, observation only
+  hypotheses: Insight[]; // up to 3, status TEST_CANDIDATE (n >= minSampleTestCandidate)
+  observations: Insight[]; // up to 3, n < minSampleTestCandidate, observation only
   explanation: string | null;
   analyzed_record_count: number;
   method: string;
@@ -126,7 +126,8 @@ export function generateInsights(
       const distinctDates = new Set([...g.idx].map((i) => records[i].eventDate)).size;
       const dateSpread = Math.sqrt(Math.min(distinctDates, 3) / 3);
       const score = (robustGap * Math.sqrt(Math.min(gs.n, 30)) * dateSpread) / (1 + cv);
-      const status: InsightStatus = gs.n >= opts.minSampleObservation && robustGap > 0 ? "TEST_CANDIDATE" : "OBSERVATION";
+      // Only the higher, configured test threshold promotes a group to a hypothesis for an experiment.
+      const status: InsightStatus = gs.n >= opts.minSampleTestCandidate && robustGap > 0 ? "TEST_CANDIDATE" : "OBSERVATION";
       const d = describe(dim.kind, g.label);
       const limitations = [...BASE_LIMITATIONS];
       if (dim.kind === "MERCHANT") limitations.push("ממוצע לפי בית עסק מבוסס רק על רשומות של בית עסק יחיד; מקבצים לא נכללו.");
@@ -137,6 +138,8 @@ export function generateInsights(
             : `הרשומות בקבוצה הן מ-${distinctDates} תאריכים בלבד — ייתכן שהפער משקף ימים מסוימים ולא דפוס חוזר.`,
         );
       if (gs.n < opts.minSampleObservation) limitations.unshift("תצפית בלבד — המסקנה דורשת בדיקת שטח.");
+      else if (gs.n < opts.minSampleTestCandidate)
+        limitations.unshift(`אינדיקציה ראשונית בלבד — פחות מ-${opts.minSampleTestCandidate} רשומות; לא מספיק להשערה לניסוי.`);
       all.push({
         key: `${dim.kind}:${key}`,
         kind: dim.kind,
@@ -168,8 +171,9 @@ export function generateInsights(
     .filter((i) => i.status === "TEST_CANDIDATE" && i.robust_gap_pct / 100 >= minGap)
     .sort((a, b) => b.score - a.score)
     .slice(0, 3);
+  // Small samples need a larger gap to be shown at all.
   const observations = all
-    .filter((i) => i.sample_size < opts.minSampleObservation && i.robust_gap_pct / 100 >= minGap * 2)
+    .filter((i) => i.status === "OBSERVATION" && i.robust_gap_pct / 100 >= (i.sample_size < opts.minSampleObservation ? minGap * 2 : minGap))
     .sort((a, b) => b.score - a.score)
     .slice(0, 3);
 
@@ -177,7 +181,7 @@ export function generateInsights(
   if (records.length === 0) explanation = "אין רשומות משלוח בטווח הסינון — לא ניתן ליצור השערות.";
   else if (hypotheses.length < 3)
     explanation =
-      `נמצאו ${hypotheses.length} השערות בלבד עם בסיס של לפחות ${opts.minSampleObservation} רשומות ופער חיובי יציב (≥${opts.minGapPct ?? 5}%) ` +
+      `נמצאו ${hypotheses.length} השערות בלבד עם בסיס של לפחות ${opts.minSampleTestCandidate} רשומות ופער חיובי יציב (≥${opts.minGapPct ?? 5}%) ` +
       `לעומת שאר הרשומות. כדי לקבל השערות נוספות נדרשים נתונים נוספים (דוחות נוספים ומשמרות מתועדות).`;
 
   return {

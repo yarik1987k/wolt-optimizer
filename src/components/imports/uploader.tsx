@@ -11,7 +11,7 @@ import type { ImportPreview, ImportResult } from "@/lib/import/service";
 import { formatDateHe } from "@/lib/time";
 import { RECORD_TYPE_LABELS, RECORD_TYPES } from "@/lib/types";
 
-const STATUS_LABEL = { NEW: "חדשה", DUPLICATE_IN_FILE: "עותק בקובץ", ALREADY_IMPORTED: "כבר קיימת" } as const;
+const STATUS_LABEL = { NEW: "חדשה", DUPLICATE_IN_FILE: "עותק בקובץ", ALREADY_IMPORTED: "כבר קיימת", POSSIBLE_DUPLICATE: "כפילות אפשרית" } as const;
 
 export function Uploader() {
   const router = useRouter();
@@ -20,11 +20,13 @@ export function Uploader() {
   const [result, setResult] = useState<ImportResult | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const [includePossible, setIncludePossible] = useState(false);
 
   async function send(url: string) {
     if (!file) return null;
     const fd = new FormData();
     fd.set("file", file);
+    if (includePossible) fd.set("includePossibleDuplicates", "true");
     setBusy(true);
     setError(null);
     const res = await fetch(url, { method: "POST", body: fd });
@@ -51,6 +53,7 @@ export function Uploader() {
             data-testid="csv-input"
             onChange={(e) => {
               setFile(e.target.files?.[0] ?? null);
+              setIncludePossible(false);
               setPreview(null);
               setResult(null);
             }}
@@ -129,6 +132,17 @@ export function Uploader() {
                 </tbody>
               </Table>
             </details>
+            {preview.possibleDuplicateCount > 0 && (
+              <label className="flex items-center gap-2 text-sm">
+                <input
+                  type="checkbox"
+                  data-testid="include-possible-duplicates"
+                  checked={includePossible}
+                  onChange={(e) => setIncludePossible(e.target.checked)}
+                />
+                ייבא גם <Num>{preview.possibleDuplicateCount}</Num> שורות שסומנו ככפילות אפשרית (רק אם ידוע שאלה תשלומים נפרדים)
+              </label>
+            )}
             <Button
               disabled={busy || preview.hasErrors}
               onClick={async () => {
@@ -139,7 +153,10 @@ export function Uploader() {
                 }
               }}
             >
-              {preview.newRowCount === 0 ? "אשר ייבוא (אין שורות חדשות)" : `אשר ייבוא של ${preview.newRowCount} שורות`}
+              {(() => {
+                const n = preview.newRowCount + (includePossible ? preview.possibleDuplicateCount : 0);
+                return n === 0 ? "אשר ייבוא (אין שורות חדשות)" : `אשר ייבוא של ${n} שורות`;
+              })()}
             </Button>
             {preview.hasErrors && <Alert level="error">יש שורות לא תקינות — הייבוא חסום. תקן את הקובץ ונסה שוב.</Alert>}
           </div>

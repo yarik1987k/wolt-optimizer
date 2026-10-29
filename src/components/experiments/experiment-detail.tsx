@@ -17,7 +17,7 @@ export interface ShiftOption {
   endTime: string;
   areaText: string;
   durationHours: number;
-  linkedRecordCount: number;
+  linkedRecordCount: number; // confirmed DELIVERY records
   group: "CONTROL" | "TEST" | null;
 }
 
@@ -92,9 +92,17 @@ export function ExperimentDetail({
               <> · הפרש בתרומה אחרי עלות רכב: <Num>{`${c.pct_diff_contribution_per_hour.toFixed(1)}%`}</Num></>
             )}
           </p>
+          {c.diff_uncertainty_pct != null && (
+            <p className="text-xs text-muted" data-testid="diff-uncertainty">
+              טווח שונות משוער של ההפרש (תיאורי, ±2 שגיאות תקן): <Num>{`±${c.diff_uncertainty_pct.toFixed(1)}%`}</Num>
+            </p>
+          )}
           <Alert level={c.can_determine ? "info" : "warning"} data-testid="verdict">{c.verdict}</Alert>
           {c.warnings.map((w) => (
             <Alert key={w} level="warning">{w}</Alert>
+          ))}
+          {c.comparability_notes.map((n) => (
+            <Alert key={n} level="info" data-testid="comparability-note">{n}</Alert>
           ))}
           <p className="text-xs text-muted">
             יעד ראשוני: שיפור של ≥{c.target_improvement_pct}% ב-₪ לשעת משמרת (ללא בונוסים ותוספות) מול ביקורת, שחוזר במספר משמרות. תוצאה היא אינדיקציה ולא הוכחה סיבתית;
@@ -107,7 +115,7 @@ export function ExperimentDetail({
             <p className="text-sm text-muted">אין משמרות מתועדות. תעד משמרות בעמוד ״משמרות״.</p>
           ) : (
             <Table>
-              <thead><tr><Th>משמרת</Th><Th>אזור</Th><Th>שעות</Th><Th>רשומות מאושרות</Th><Th>קבוצה</Th></tr></thead>
+              <thead><tr><Th>משמרת</Th><Th>אזור</Th><Th>שעות</Th><Th>משלוחים מאושרים</Th><Th>קבוצה</Th></tr></thead>
               <tbody>
                 {shifts.map((s) => (
                   <tr key={s.id}>

@@ -75,7 +75,7 @@ function ShiftCard({ s, experiments }: { s: ShiftRow; experiments: { id: string;
         <dl className="grid gap-2 text-sm sm:grid-cols-2 lg:grid-cols-4">
           <div><dt className="text-muted">משך</dt><dd data-testid="shift-duration"><Num>{m.duration_hours.toFixed(2)}</Num> שעות</dd></div>
           <div><dt className="text-muted">רשומות מאושרות</dt><dd><Num>{m.linked_record_count}</Num></dd></div>
-          <div><dt className="text-muted">משלוחים (ללא מע״מ)</dt><dd><Money agorot={m.linked_record_count ? m.delivery_amount_ex_vat_agorot : null} /></dd></div>
+          <div><dt className="text-muted">משלוחים (ללא מע״מ)</dt><dd><Money agorot={m.linked_delivery_count ? m.delivery_amount_ex_vat_agorot : null} /></dd></div>
           <div><dt className="text-muted">בונוסים / תוספות</dt><dd><Money agorot={m.bonus_amount_agorot} /> / <Money agorot={m.adjustment_amount_agorot} /></dd></div>
           <div>
             <dt className="text-muted">₪ לשעת משמרת {withExtras ? "(כולל תוספות)" : "(משלוחים בלבד)"}</dt>

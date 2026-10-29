@@ -54,7 +54,7 @@ export default async function ExperimentsPage({ searchParams }: { searchParams: 
                 endTime: s.endTime,
                 areaText: s.areaText,
                 durationHours: s.metrics.duration_hours,
-                linkedRecordCount: s.metrics.linked_record_count,
+                linkedRecordCount: s.metrics.linked_delivery_count,
                 group: groupOf.get(s.id) ?? null,
               }))}
             />

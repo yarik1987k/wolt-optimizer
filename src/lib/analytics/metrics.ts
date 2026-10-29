@@ -34,7 +34,11 @@ export async function getOverview(filters: Filters): Promise<Overview> {
   const deliveries = rows.filter((r) => r.type === "DELIVERY");
   const s = summarize(deliveries.map((r) => r.amountAgorot));
   const sumOf = (t: string) => rows.filter((r) => r.type === t).reduce((a, r) => a + r.amountAgorot, 0);
-  const shift = await getShiftKpis();
+  // Shift KPIs are shift-level: only the date range and weekdays apply (by shift date).
+  const shift = await getShiftKpis({ from: filters.from, to: filters.to, weekdays: filters.weekdays });
+  const notes = [...shift.notes];
+  const recordOnly = (["hourFrom", "hourTo", "types", "merchant", "report", "bundle", "q"] as const).filter((k) => filters[k] !== undefined);
+  if (recordOnly.length) notes.push("₪ לשעת משמרת ו-₪/ק״מ מסוננים לפי תאריך ויום בשבוע בלבד; שאר המסננים חלים על רשומות ולא על משמרות.");
   return {
     delivery_income_ex_vat_agorot: s.sum,
     delivery_record_count: s.n,
@@ -52,7 +56,7 @@ export async function getOverview(filters: Filters): Promise<Overview> {
     delivery_per_shift_hour_agorot: shift.deliveryPerShiftHourAgorot,
     delivery_per_km_agorot: shift.deliveryPerKmAgorot,
     shifts_without_links_count: shift.shiftsWithoutLinks,
-    notes: shift.notes,
+    notes,
   };
 }
 

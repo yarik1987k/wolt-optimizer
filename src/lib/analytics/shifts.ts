@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { prisma } from "@/lib/db";
-import { addMinutesLocal, computeShiftWindow } from "@/lib/time";
+import { addMinutesLocal, computeShiftWindow, weekdayOf } from "@/lib/time";
 import type { RecordType } from "@/lib/types";
 
 export const shiftInputSchema = z.object({
@@ -46,6 +46,8 @@ export interface ShiftMetricsInput {
 export interface ShiftMetrics {
   duration_hours: number;
   linked_record_count: number;
+  /** Linked DELIVERY records. Rates are null when 0: extras alone don't tell delivery income. */
+  linked_delivery_count: number;
   delivery_amount_ex_vat_agorot: number;
   bonus_amount_agorot: number;
   adjustment_amount_agorot: number;
@@ -63,13 +65,16 @@ export function computeShiftMetrics(s: ShiftMetricsInput): ShiftMetrics {
   const delivery = sum("DELIVERY");
   const bonus = sum("BONUS");
   const adjustment = sum("ADJUSTMENT");
-  const hasLinks = s.linkedRecords.length > 0;
+  const deliveryCount = s.linkedRecords.filter((r) => r.type === "DELIVERY").length;
+  // A shift linked only to bonuses/adjustments has unknown delivery income, not ₪0.
+  const hasDeliveries = deliveryCount > 0;
   const vehicleCost =
     s.distanceKm != null && s.vehicleCostPerKmAgorot != null ? Math.round(s.distanceKm * s.vehicleCostPerKmAgorot) : null;
-  const perHour = (x: number) => (hasLinks && hours > 0 ? x / hours : null);
+  const perHour = (x: number) => (hasDeliveries && hours > 0 ? x / hours : null);
   return {
     duration_hours: hours,
     linked_record_count: s.linkedRecords.length,
+    linked_delivery_count: deliveryCount,
     delivery_amount_ex_vat_agorot: delivery,
     bonus_amount_agorot: bonus,
     adjustment_amount_agorot: adjustment,
@@ -78,7 +83,7 @@ export function computeShiftMetrics(s: ShiftMetricsInput): ShiftMetrics {
     gross_including_extras_per_hour_ex_vat_agorot: perHour(delivery + bonus + adjustment),
     estimated_vehicle_cost_agorot: vehicleCost,
     contribution_per_hour_ex_vat_agorot: vehicleCost != null ? perHour(delivery - vehicleCost) : null,
-    delivery_per_km_agorot: hasLinks && s.distanceKm ? delivery / s.distanceKm : null,
+    delivery_per_km_agorot: hasDeliveries && s.distanceKm ? delivery / s.distanceKm : null,
   };
 }
 
@@ -95,13 +100,27 @@ export async function listShiftsWithMetrics() {
   }));
 }
 
+/** Shift-level scope: a shift is selected by its own date, not by its linked records. */
+export interface ShiftScope {
+  from?: string;
+  to?: string;
+  weekdays?: number[];
+}
+
+export function shiftInScope(s: { date: string }, scope: ShiftScope = {}): boolean {
+  if (scope.from && s.date < scope.from) return false;
+  if (scope.to && s.date > scope.to) return false;
+  if (scope.weekdays?.length && !scope.weekdays.includes(weekdayOf(s.date))) return false;
+  return true;
+}
+
 /**
- * KPIs across logged shifts. Shifts with no confirmed records are left out: their income
- * is unknown, not zero.
+ * KPIs across logged shifts in `scope`. Shifts without a confirmed DELIVERY record are left
+ * out: their delivery income is unknown, not zero.
  */
-export async function getShiftKpis() {
-  const shifts = await listShiftsWithMetrics();
-  const withLinks = shifts.filter((s) => s.metrics.linked_record_count > 0);
+export async function getShiftKpis(scope: ShiftScope = {}) {
+  const shifts = (await listShiftsWithMetrics()).filter((s) => shiftInScope(s, scope));
+  const withLinks = shifts.filter((s) => s.metrics.linked_delivery_count > 0);
   const hours = withLinks.reduce((a, s) => a + s.metrics.duration_hours, 0);
   const delivery = withLinks.reduce((a, s) => a + s.metrics.delivery_amount_ex_vat_agorot, 0);
   const withKm = withLinks.filter((s) => s.distanceKm && s.distanceKm > 0);
@@ -109,7 +128,12 @@ export async function getShiftKpis() {
   const kmDelivery = withKm.reduce((a, s) => a + s.metrics.delivery_amount_ex_vat_agorot, 0);
   const notes: string[] = [];
   const without = shifts.length - withLinks.length;
-  if (without > 0) notes.push(`${without} משמרות ללא רשומות מאושרות לא נכללו בחישוב ₪/שעה.`);
+  const extrasOnly = shifts.filter((s) => s.metrics.linked_record_count > 0 && s.metrics.linked_delivery_count === 0).length;
+  if (without > 0)
+    notes.push(
+      `${without} משמרות ללא רשומות משלוח מאושרות לא נכללו בחישוב ₪/שעה` +
+        (extrasOnly > 0 ? ` (מתוכן ${extrasOnly} עם בונוסים/התאמות בלבד).` : "."),
+    );
   return {
     shiftCount: shifts.length,
     shiftsWithoutLinks: without,
@@ -147,16 +171,44 @@ export async function suggestRecordsForShift(shiftId: string) {
   });
 }
 
+export class LinkValidationError extends Error {
+  constructor(
+    message: string,
+    public recordIds: string[],
+  ) {
+    super(message);
+  }
+}
+
 export class LinkConflictError extends Error {
   constructor(public conflicts: { recordId: string; shiftId: string }[]) {
     super("חלק מהרשומות כבר משויכות למשמרת אחרת — שיוך כפול אסור. בטל קודם את השיוך הקיים.");
   }
 }
 
-/** Links records after explicit confirmation. All-or-nothing; refuses double attribution. */
-export async function confirmLinks(shiftId: string, recordIds: string[]) {
+/**
+ * Links records after explicit confirmation. All-or-nothing; refuses double attribution,
+ * unknown records and records outside the suggestion window (shift start → end + 30 min).
+ * `allowOutsideWindow` is the explicit override for late payouts (e.g. a weekly bonus).
+ */
+export async function confirmLinks(shiftId: string, recordIdsInput: string[], opts: { allowOutsideWindow?: boolean } = {}) {
+  const recordIds = [...new Set(recordIdsInput)];
   return prisma.$transaction(async (tx) => {
-    await tx.shift.findUniqueOrThrow({ where: { id: shiftId } });
+    const shift = await tx.shift.findUniqueOrThrow({ where: { id: shiftId } });
+    const records = await tx.deliveryRecord.findMany({ where: { id: { in: recordIds } }, select: { id: true, eventTimestampLocal: true } });
+    const found = new Set(records.map((r) => r.id));
+    const missing = recordIds.filter((id) => !found.has(id));
+    if (missing.length) throw new LinkValidationError("חלק מהרשומות לא נמצאו.", missing);
+    if (!opts.allowOutsideWindow) {
+      const from = `${shift.startedAt}:00`;
+      const to = addMinutesLocal(shift.endedAt, MATCH_TOLERANCE_AFTER_END_MINUTES);
+      const outside = records.filter((r) => r.eventTimestampLocal < from || r.eventTimestampLocal > to).map((r) => r.id);
+      if (outside.length)
+        throw new LinkValidationError(
+          `${outside.length} רשומות אינן בחלון המשמרת (עד ${MATCH_TOLERANCE_AFTER_END_MINUTES} דקות אחרי הסיום). לשיוך תשלום מאוחר יש לאשר במפורש חריגה מהחלון.`,
+          outside,
+        );
+    }
     const existing = await tx.shiftRecordLink.findMany({ where: { recordId: { in: recordIds } } });
     const conflicts = existing.filter((l) => l.shiftId !== shiftId);
     if (conflicts.length) throw new LinkConflictError(conflicts.map((c) => ({ recordId: c.recordId, shiftId: c.shiftId })));

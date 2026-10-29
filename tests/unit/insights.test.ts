@@ -14,7 +14,7 @@ describe("insights engine", () => {
     expect(r.analyzed_record_count).toBe(41);
     expect(r.hypotheses.length).toBeLessThanOrEqual(3);
     for (const h of r.hypotheses) {
-      expect(h.sample_size).toBeGreaterThanOrEqual(5);
+      expect(h.sample_size).toBeGreaterThanOrEqual(10); // minSampleTestCandidate
       expect(h.baseline.n + h.group.n).toBe(41); // baseline excludes the group itself
       expect(h.robust_gap_pct).toBeGreaterThan(0);
       expect(h.limitations.join(" ")).toContain("שעת הרישום בדוח");
@@ -24,8 +24,9 @@ describe("insights engine", () => {
     }
     if (r.hypotheses.length < 3) expect(r.explanation).toBeTruthy();
     for (const o of r.observations) {
-      expect(o.sample_size).toBeLessThan(5);
-      expect(o.confidence_label).toBe("מדגם קטן — לא להמלצה");
+      expect(o.sample_size).toBeLessThan(10);
+      expect(o.status).toBe("OBSERVATION");
+      expect(o.confidence_label).toMatch(o.sample_size < 5 ? /^מדגם קטן — לא להמלצה/ : /^אינדיקציה ראשונית/);
     }
   });
 

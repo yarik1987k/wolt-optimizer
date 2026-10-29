@@ -19,6 +19,8 @@ export interface ImportPreview {
   uniqueRowCount: number;
   inFileDuplicateCount: number; // rows that are copies of other rows in the same upload (e.g. a duplicated report)
   alreadyImportedCount: number;
+  /** Rows without a report number whose content matches an existing record (e.g. a renamed export). */
+  possibleDuplicateCount: number;
   newRowCount: number;
   countsByType: Record<RecordType, number>;
   totalAgorot: number;
@@ -27,8 +29,14 @@ export interface ImportPreview {
   existingReportsInDb: string[];
   findings: DataQualityFinding[];
   hasErrors: boolean;
-  rows: (ParsedRow & { status: "NEW" | "DUPLICATE_IN_FILE" | "ALREADY_IMPORTED" })[];
+  rows: (ParsedRow & { status: RowStatus })[];
 }
+
+export type RowStatus = "NEW" | "DUPLICATE_IN_FILE" | "ALREADY_IMPORTED" | "POSSIBLE_DUPLICATE";
+
+/** Report-independent identity of a row's content. */
+const contentKey = (r: { eventDate: string; eventTime: string; amountAgorot: number; merchantRaw: string; notes: string }) =>
+  [r.eventDate, r.eventTime, r.amountAgorot, r.merchantRaw.trim(), r.notes.trim()].join("\u001f");
 
 export async function previewImport(text: string, fileName: string): Promise<ImportPreview> {
   const rules = await getRules();
@@ -43,13 +51,39 @@ export async function previewImport(text: string, fileName: string): Promise<Imp
       (r) => r.externalRowKey,
     ),
   );
-  const rows = parsed.rows.map((r) => {
-    let status: "NEW" | "DUPLICATE_IN_FILE" | "ALREADY_IMPORTED" = "NEW";
+  const rows = parsed.rows.map((r): ParsedRow & { status: RowStatus } => {
+    let status: RowStatus = "NEW";
     if (seen.has(r.externalRowKey)) status = "DUPLICATE_IN_FILE";
     else if (existing.has(r.externalRowKey)) status = "ALREADY_IMPORTED";
     seen.add(r.externalRowKey);
     return { ...r, status };
   });
+
+  // Without a report number the key depends on the file name, so a renamed export would get
+  // new keys. Rows whose content matches existing records are held back for a manual decision.
+  const unidentified = rows.filter((r) => r.status === "NEW" && !r.reportNumber);
+  if (unidentified.length) {
+    const candidates = await prisma.deliveryRecord.findMany({
+      where: { eventTimestampLocal: { in: [...new Set(unidentified.map((r) => r.eventTimestampLocal))] } },
+      select: { eventDate: true, eventTime: true, amountAgorot: true, merchantRaw: true, notes: true },
+    });
+    const remaining = new Map<string, number>();
+    for (const c of candidates) remaining.set(contentKey(c), (remaining.get(contentKey(c)) ?? 0) + 1);
+    for (const r of unidentified) {
+      const left = remaining.get(contentKey(r)) ?? 0;
+      if (left > 0) {
+        r.status = "POSSIBLE_DUPLICATE";
+        remaining.set(contentKey(r), left - 1);
+      }
+    }
+  }
+  const possibleDuplicates = rows.filter((r) => r.status === "POSSIBLE_DUPLICATE");
+  if (possibleDuplicates.length)
+    findings.unshift({
+      level: "warning",
+      message: `${possibleDuplicates.length} שורות ללא מספר דוח זהות בתוכנן לרשומות קיימות (ייתכן שזה אותו דוח בשם קובץ אחר). הן לא ייובאו אלא אם תאשר זאת במפורש.`,
+      csvLines: possibleDuplicates.map((r) => r.csvLine),
+    });
   const unique = rows.filter((r) => r.status !== "DUPLICATE_IN_FILE");
 
   const countsByType: Record<RecordType, number> = { DELIVERY: 0, BONUS: 0, ADJUSTMENT: 0, UNKNOWN: 0 };
@@ -93,6 +127,7 @@ export async function previewImport(text: string, fileName: string): Promise<Imp
     uniqueRowCount: unique.length,
     inFileDuplicateCount: rows.length - unique.length,
     alreadyImportedCount: rows.filter((r) => r.status === "ALREADY_IMPORTED").length,
+    possibleDuplicateCount: possibleDuplicates.length,
     newRowCount: rows.filter((r) => r.status === "NEW").length,
     countsByType,
     totalAgorot: unique.reduce((a, r) => a + r.amountAgorot, 0),
@@ -112,18 +147,27 @@ export interface ImportResult {
   skippedCount: number;
   skippedInFile: number;
   skippedAlreadyImported: number;
+  skippedPossibleDuplicates: number;
 }
 
 export class ImportValidationError extends Error {}
 
-/** Idempotent: rows whose key already exists (or repeats within the upload) are skipped. */
-export async function commitImport(text: string, fileName: string): Promise<ImportResult> {
+/**
+ * Idempotent: rows whose key already exists (or repeats within the upload) are skipped.
+ * Possible duplicates (see previewImport) are skipped unless `includePossibleDuplicates`.
+ */
+export async function commitImport(
+  text: string,
+  fileName: string,
+  opts: { includePossibleDuplicates?: boolean } = {},
+): Promise<ImportResult> {
   const preview = await previewImport(text, fileName);
   if (preview.hasErrors) {
     throw new ImportValidationError("הקובץ מכיל שורות לא תקינות. תקן את הקובץ וייבא שוב — לא יובאו שורות חלקיות.");
   }
   if (preview.parsedRowCount === 0) throw new ImportValidationError("לא נמצאו שורות לייבוא");
-  const toInsert = preview.rows.filter((r) => r.status === "NEW");
+  const toInsert = preview.rows.filter((r) => r.status === "NEW" || (opts.includePossibleDuplicates && r.status === "POSSIBLE_DUPLICATE"));
+  const skippedPossible = opts.includePossibleDuplicates ? 0 : preview.possibleDuplicateCount;
   return prisma.$transaction(async (tx) => {
     const batch = await tx.importBatch.create({
       data: {
@@ -169,7 +213,8 @@ export async function commitImport(text: string, fileName: string): Promise<Impo
       insertedCount: inserted,
       skippedCount: skipped,
       skippedInFile: preview.inFileDuplicateCount,
-      skippedAlreadyImported: skipped - preview.inFileDuplicateCount,
+      skippedAlreadyImported: skipped - preview.inFileDuplicateCount - skippedPossible,
+      skippedPossibleDuplicates: skippedPossible,
     };
   });
 }
