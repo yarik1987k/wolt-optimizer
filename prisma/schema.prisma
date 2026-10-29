@@ -1,0 +1,122 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// Enum-like string columns are validated with Zod in src/lib/types.ts.
+
+model ImportBatch {
+  id             String           @id @default(cuid())
+  sourceFileName String
+  sourceHash     String
+  reportNumbers  String // comma separated report numbers detected in the file
+  importedAt     DateTime         @default(now())
+  rowCount       Int // rows parsed from the file
+  insertedCount  Int
+  skippedCount   Int // rows skipped as duplicates
+  records        DeliveryRecord[]
+
+  @@index([sourceHash])
+}
+
+model DeliveryRecord {
+  id                  String            @id @default(cuid())
+  importBatchId       String
+  importBatch         ImportBatch       @relation(fields: [importBatchId], references: [id])
+  externalRowKey      String            @unique
+  reportNumber        String?
+  eventDate           String // YYYY-MM-DD (Asia/Jerusalem local date as printed in the report)
+  eventTime           String // HH:mm:ss
+  eventTimestampLocal String // YYYY-MM-DDTHH:mm:ss, Asia/Jerusalem wall clock
+  weekday             Int // 0=Sunday .. 6=Saturday
+  merchantRaw         String
+  notes               String
+  amountAgorot        Int
+  type                String // DELIVERY | BONUS | ADJUSTMENT | UNKNOWN
+  typeAutoClassified  String // type assigned by the rules at import time
+  typeManuallySet     Boolean           @default(false)
+  isBundle            Boolean
+  sourceFileName      String
+  rowIndex            Int
+  shiftLinks          ShiftRecordLink[]
+
+  @@index([eventDate, eventTime])
+  @@index([type])
+  @@index([reportNumber])
+  @@index([merchantRaw])
+}
+
+model Shift {
+  id                     String            @id @default(cuid())
+  date                   String // YYYY-MM-DD
+  startTime              String // HH:mm
+  endTime                String // HH:mm (earlier than start => crosses midnight)
+  startedAt              String // YYYY-MM-DDTHH:mm local
+  endedAt                String // YYYY-MM-DDTHH:mm local
+  areaText               String
+  distanceKm             Float?
+  vehicleCostPerKmAgorot Int?
+  followedRecommendation Boolean           @default(false)
+  notes                  String?
+  createdAt              DateTime          @default(now())
+  links                  ShiftRecordLink[]
+  experiments            ExperimentShift[]
+}
+
+model ShiftRecordLink {
+  shiftId           String
+  recordId          String            @unique // a record may belong to one shift only
+  shift             Shift             @relation(fields: [shiftId], references: [id], onDelete: Cascade)
+  record            DeliveryRecord    @relation(fields: [recordId], references: [id], onDelete: Cascade)
+  manuallyConfirmed Boolean           @default(true)
+  createdAt         DateTime          @default(now())
+
+  @@id([shiftId, recordId])
+}
+
+model Experiment {
+  id             String            @id @default(cuid())
+  title          String
+  hypothesisText String
+  targetMetric   String            @default("DELIVERY_PER_SHIFT_HOUR_EX_EXTRAS")
+  startDate      String?
+  insightId      String?
+  insight        Insight?          @relation(fields: [insightId], references: [id])
+  createdAt      DateTime          @default(now())
+  status         String            @default("PLANNED") // PLANNED | RUNNING | COMPLETE
+  shifts         ExperimentShift[]
+}
+
+model ExperimentShift {
+  experimentId String
+  shiftId      String
+  group        String // CONTROL | TEST
+  experiment   Experiment @relation(fields: [experimentId], references: [id], onDelete: Cascade)
+  shift        Shift      @relation(fields: [shiftId], references: [id], onDelete: Cascade)
+
+  @@id([experimentId, shiftId])
+}
+
+// Snapshot of an insight at the moment the user chose to test it.
+// Dashboard insights are computed dynamically and not persisted on every refresh.
+model Insight {
+  id                 String       @id @default(cuid())
+  kind               String // HOUR | WEEKDAY | MERCHANT
+  insightKey         String
+  generatedAt        DateTime     @default(now())
+  filterSnapshotJson String
+  metricJson         String
+  rationale          String
+  sampleSize         Int
+  status             String // OBSERVATION | TEST_CANDIDATE
+  experiments        Experiment[]
+}
+
+model Setting {
+  key       String @id
+  valueJson String
+}
