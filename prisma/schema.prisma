@@ -43,6 +43,7 @@ model DeliveryRecord {
   sourceFileName      String
   rowIndex            Int
   shiftLinks          ShiftRecordLink[]
+  offer               Offer?
 
   @@index([eventDate, eventTime])
   @@index([type])
@@ -65,6 +66,7 @@ model Shift {
   createdAt              DateTime          @default(now())
   links                  ShiftRecordLink[]
   experiments            ExperimentShift[]
+  offers                 Offer[]
 }
 
 model ShiftRecordLink {
@@ -119,4 +121,345 @@ model Insight {
 model Setting {
   key       String @id
   valueJson String
+}
+
+// ---------------------------------------------------------------------------
+// Phase 2: offers observed by the Android "Wolt Offer Collector" (local JSON export).
+// Offer       = a card SEEN on screen. Never implies acceptance.
+// outcome     = user label only (ACCEPTED / DECLINED / EXPIRED), never inferred.
+// completed   = user label only.
+// paymentRecordId = manual link to the DeliveryRecord (payment in a Wolt report).
+// Amounts are agorot AS DISPLAYED in the courier app; whether that includes VAT is unknown,
+// so they are never mixed with report amounts (which are ex-VAT).
+// ---------------------------------------------------------------------------
+
+model OfferImportBatch {
+  id                      String             @id @default(cuid())
+  sourceFileName          String
+  sourceHash              String
+  exportFormat            String
+  exportedAtUtc           String
+  appVersion              String
+  selectedPackage         String?
+  importedAt              DateTime           @default(now())
+  screenEventCount        Int
+  offerScreenCount        Int // screen events that look like an offer card
+  newObservationCount     Int
+  skippedObservationCount Int // already imported (same Collector screen id)
+  observations            OfferObservation[]
+
+  @@index([sourceHash])
+}
+
+/** One Collector screen snapshot that shows an offer card. */
+model OfferObservation {
+  id                  String           @id @default(cuid())
+  screenEventId       String           @unique // id from the Collector export
+  batchId             String
+  batch               OfferImportBatch @relation(fields: [batchId], references: [id])
+  observedAtUtc       DateTime
+  sourcePackage       String
+  amountAgorot        Int
+  distanceMeters      Int?
+  durationMin         Int?
+  stopsCount          Int?
+  pickupNamesJson     String // JSON array of business names (may be empty)
+  parseVersion        String
+  coalescedEventCount Int
+  offerId             String?
+  offer               Offer?           @relation(fields: [offerId], references: [id], onDelete: SetNull)
+
+  @@index([observedAtUtc])
+}
+
+model Offer {
+  id                  String             @id @default(cuid())
+  offerKey            String             @unique // screenEventId of the first observation
+  source              String             @default("ANDROID_COLLECTOR")
+  sourcePackage       String
+  firstSeenAtUtc      DateTime
+  lastSeenAtUtc       DateTime
+  onScreenSeconds     Int // last - first observation; a lower bound of the real display time
+  amountAgorot        Int
+  amountBasis         String             @default("AS_DISPLAYED_VAT_UNKNOWN")
+  distanceMeters      Int?
+  durationMin         Int?
+  stopsCount          Int?
+  pickupNamesJson     String             @default("[]")
+  observationCount    Int
+  detection           String // CONFIRMED_CARD | PARTIAL_CARD
+  detectionConfidence Float
+  verification        String             @default("UNVERIFIED") // UNVERIFIED | USER_VERIFIED
+  verificationSource  String?
+  verifiedAt          DateTime?
+  outcome             String             @default("UNKNOWN") // UNKNOWN | ACCEPTED | DECLINED | EXPIRED (user label)
+  outcomeSource       String?
+  completed           Boolean? // user label; null = unknown
+  shiftId             String?
+  shift               Shift?             @relation(fields: [shiftId], references: [id], onDelete: SetNull)
+  paymentRecordId     String?            @unique
+  paymentRecord       DeliveryRecord?    @relation(fields: [paymentRecordId], references: [id], onDelete: SetNull)
+  observations        OfferObservation[]
+  createdAt           DateTime           @default(now())
+  updatedAt           DateTime           @updatedAt
+
+  @@index([firstSeenAtUtc])
+  @@index([detection])
+}
+
+// ---------------------------------------------------------------------------
+// Phase 3: Hotspot Intelligence — shifts started in the Collector and coarse location samples
+// (500 m grid cells only; exact coordinates are never exported or stored).
+// Rows are keyed by the Collector's own ids so re-importing an export is idempotent.
+// Offer → cell links are NOT stored: they are computed at analysis time (src/lib/hotspots).
+// ---------------------------------------------------------------------------
+
+/** shift_sessions[] — a shift the courier started in the Collector. Not the manual `Shift`. */
+model CollectorShift {
+  id              String    @id // Collector shift id
+  startedAtUtc    DateTime
+  endedAtUtc      DateTime? // null while the shift was still running at export time
+  endReason       String? // USER | MAX_DURATION | CONSENT_REVOKED | SERVICE_STOPPED | null
+  locationConsent Boolean
+  // Shift facts (Collector chain-facts-2): time split by evidence, revenue, GPS. null = older export.
+  chainMsLow          Int?
+  chainMsHigh         Int?
+  factsChains         Int?
+  chainsUnknownEnd    Int?
+  verifiedIdleMs      Int?
+  onlineUnverifiedMs  Int?
+  offlineMs           Int?
+  unknownMs           Int?
+  revenueAgorot       Int?
+  completionSlides    Int?
+  factsEndedAtUtc     DateTime? // end used for the split (running shifts: export time)
+  gpsPathKm           Float?
+  gpsSpeedKm          Float?
+  gpsDistanceReliable Boolean?
+  factsMissingJson    String?
+  betweenChainsMs       Int? // no accepted offer active (repositioning / idle)
+  betweenChainsKm       Float?
+  betweenChainsMovingMs Int?
+  shiftStationaryMs     Int? // OBSERVED: GPS speed < 1 m/s
+  shiftMovingMs         Int?
+  importedAt      DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@index([startedAtUtc])
+}
+
+/** location_samples[] — cell id + cell centre only. */
+model LocationSample {
+  id             String   @id // Collector sample id
+  shiftId        String // Collector shift id (no FK: a sample is kept even if its shift is missing)
+  observedAtUtc  DateTime
+  trigger        String // SHIFT_START | OFFER_PRESENTED | DELIVERY_SCREEN | AVAILABLE_SCREEN | WAIT_PERIODIC | SHIFT_END
+  stateCandidate String?
+  /// Phase 3: evidence of the state at this sample (OBSERVED | ESTIMATED | UNKNOWN) and why it was taken (EVENT | PERIODIC | SESSION).
+  stateEvidence  String?
+  source         String?
+  status         String // OK | UNKNOWN
+  unknownReason  String?
+  cellId         String? // "g500:<y>:<x>"; null when status = UNKNOWN
+  cellCenterLat  Float?
+  cellCenterLon  Float?
+  accuracyM      Int?
+  fixAgeS        Int?
+  provider       String?
+  importedAt     DateTime @default(now())
+
+  @@index([observedAtUtc])
+  @@index([shiftId])
+  @@index([cellId])
+}
+
+/**
+ * delivery_events[] — derived post-hoc by the Collector from screen sequences (evidence OBSERVED /
+ * ESTIMATED / UNKNOWN). Keyed by type|action_at_ms|action; a later export updates the row.
+ */
+model CollectorDeliveryEvent {
+  eventKey       String    @id
+  type           String
+  evidence       String
+  actionAtUtc    DateTime
+  action         String
+  confirmedAtUtc DateTime?
+  confirmation   String
+  tripIndex      Int?
+  ruleValidated  Boolean
+  path           String
+  importedAt     DateTime  @default(now())
+
+  @@index([actionAtUtc])
+  @@index([type])
+}
+
+/** delivery_trips[] — keyed by started_at_ms (indices are renumbered on every export). */
+model CollectorTrip {
+  tripKey          String    @id // started_at_ms as a string
+  startedAtUtc     DateTime
+  startEvidence    String
+  completedAtUtc   DateTime?
+  endEvidence      String // OBSERVED | ESTIMATED | UNKNOWN
+  orders           Int
+  pickups          Int
+  dropoffs         Int
+  offerAmountsJson String // JSON array of agorot as displayed on the offer cards
+  expectedDropoffs Int?
+  endNote          String?
+  // Orders in the trip from Wolt's route timeline (Collector trip-orders-1). A trip is NOT one order.
+  orderEvidence    String? // SINGLE_ORDER | MULTI_ORDER | CHANGED | NO_TIMELINE
+  ordersLow        Int?
+  ordersHigh       Int?
+  cardOrderCount   Int? // "заказы N" on the card: orders at one pickup, not the trip total
+  timelineChanged  Boolean?
+  // Delivery chain (Collector chains-1): offers overlap — one accepted offer is not an isolated trip.
+  chainKey          String? // acceptance time (ms) of the chain's first offer
+  acceptContext     String? // IDLE | ADDED_TO_ACTIVE_ROUTE | UNKNOWN
+  carriedOrders     Int?
+  carriedLink       String? // NONE | SHAPE_MATCH (uncertain: matched by redacted stop shape)
+  newOrdersLow      Int? // orders this offer added
+  newOrdersHigh     Int?
+  tripBoundaryValid Boolean? // false: the detector's end time is not this offer's completion
+  chainNotesJson    String?
+  // Offer context for the incremental-offer model (Collector chain-facts-1).
+  offerSeenAtUtc        DateTime?
+  offerCell             String? // courier's ~500 m cell when the card appeared
+  acceptedEarliestAtUtc DateTime? // accepted between this (card closed) and startedAtUtc (pickup screen)
+  activeOrdersBefore    Int?
+  newOrdersConfidence   String? // HIGH | MEDIUM | LOW | UNKNOWN
+  routeBeforeJson       String? // last route before acceptance (redacted stop shapes), ADDED offers only
+  routeAfterJson        String? // first route after acceptance, stops marked NEW / CARRIED / AMBIGUOUS
+  newPickupStops        Int?
+  newDropoffStopsByShape Int?
+  ambiguousDropoffStops Int?
+  cardDistanceKm        Float? // WOLT_DISPLAY on the card
+  cardMinutes           Int? // WOLT_DISPLAY on the card (meaning unverified)
+  routeBeforeAgeMs      Int?
+  incrementalMinutesUpper  Float? // retired (chain-facts-2 bound); no longer filled
+  incrementalMinutesWoltEta Float? // retired (ETA delta proved invalid: targets do not move); no longer filled
+  estimateNotesJson     String? // notes on the snapshots around acceptance
+  dropScreenBeforeAgeMs Int?
+  routeAfterDelayMs     Int?
+  completionsBetweenBeforeAccept Int? // OBSERVED completions between the before-route and acceptance
+  carriedTargetShiftMin Float? // WOLT_DISPLAY: largest move of a carried stop's target
+  routeChangedOtherReasons Boolean?
+  importedAt       DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  @@index([startedAtUtc])
+}
+
+/// A delivery chain: accepted offers that overlapped (an offer accepted while orders were on board joins
+/// the chain). Times are ranges; per-offer completions inside a chain are never assigned.
+model CollectorChain {
+  chainKey             String    @id // acceptance time (ms) of the chain's first offer
+  startEarliestAtUtc   DateTime?
+  startLatestAtUtc     DateTime
+  endEarliestAtUtc     DateTime?
+  endLatestAtUtc       DateTime?
+  endEvidence          String
+  tripIndexesJson      String
+  offers               Int
+  revenueAgorot        Int // accepted-offer amounts, each counted once
+  ordersLow            Int?
+  ordersHigh           Int?
+  gpsSamples           Int
+  gpsMaxGapMs          Int?
+  gpsCoverage          Float?
+  gpsPathKm            Float? // through ~500 m cell centres
+  gpsSpeedKm           Float? // Σ speed × time
+  gpsDistanceReliable  Boolean
+  completionSlidesJson String? // OBSERVED drop-off slide times (ms)
+  gpsStationaryMs           Int? // OBSERVED: GPS speed < 1 m/s
+  gpsMovingMs               Int?
+  firstPickupDoneAtUtc      DateTime? // ESTIMATED (drop-off screen appeared)
+  pickupPhaseStationaryMs   Int?
+  pickupPhaseMovingMs       Int?
+  deliveryPhaseStationaryMs Int?
+  deliveryPhaseMovingMs     Int?
+  routeChangesJson     String? // route change log with Wolt-displayed ETA minutes
+  markerMinutesJson    String? // WOLT_DISPLAY map-marker minutes on drop-off screens
+  missingJson          String
+  importedAt           DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
+
+  @@index([startLatestAtUtc])
+}
+
+/// ETA validation: one OBSERVED completion (drop-off slide) against Wolt's targets for that order.
+model CollectorEtaCheck {
+  completedAtUtc          DateTime @id
+  identity                String // TIME_PAIR_REMOVED | SINGLE_ORDER_ON_SCREEN | TARGET_GONE_FROM_ROUTE | UNKNOWN
+  orderTimesJson          String // WOLT_DISPLAY clock times of the order on the drop-off screen
+  targetAtUtc             DateTime?
+  routeFirstSeenAtUtc     DateTime?
+  routeTargetFirstAtUtc   DateTime?
+  routeTargetLastAtUtc    DateTime?
+  errorVsDropScreenMin    Float?
+  errorVsFirstRouteMin    Float?
+  errorVsLastRouteMin     Float?
+  leadMin                 Float?
+  notesJson               String
+  importedAt              DateTime @default(now())
+  updatedAt               DateTime @updatedAt
+}
+
+/// Precise shift track (~5 m GPS, every few seconds) — the courier's own location, recorded at their request
+/// (30.10.2026) for route maps and distance. Insert-only; never sent anywhere.
+model CollectorTrackPoint {
+  shiftId   String
+  atUtc     DateTime
+  lat       Float
+  lon       Float
+  accuracyM Float?
+  speedMps  Float?
+
+  @@id([shiftId, atUtc])
+  @@index([atUtc])
+}
+
+/// A pickup business (Collector pickup_places). geoStatus OK = its ~500 m cell is verified from the
+/// business address. Derived from the address, so a later export may update it.
+model CollectorPickupPlace {
+  key         String   @id // "<name>|<address>"
+  name        String
+  address     String
+  firstSeenAt DateTime
+  geoStatus   String
+  cellId      String?
+  geoNote     String?
+  importedAt  DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+/// Shadow-mode prediction exactly as recorded on the phone at offer time. INSERT-ONLY: an import never
+/// changes a stored row (payloadJson is the verbatim export object).
+model ShadowPrediction {
+  id           String   @id
+  offerAtUtc   DateTime
+  createdAtUtc DateTime
+  ruleVersion  String
+  amountAgorot Int
+  decision     String
+  payloadJson  String
+  importedAt   DateTime @default(now())
+
+  @@index([offerAtUtc])
+}
+
+/// Wolt's own statistics for one local day, typed in by the courier. Ground truth for reconciliation —
+/// never turned into individual delivery records.
+model OfficialDayStat {
+  day                       String   @id // local date, YYYY-MM-DD (Asia/Jerusalem)
+  completedDeliveries       Int
+  earningsAgorot            Int?
+  earningsWithoutTipsAgorot Int?
+  tipsAgorot                Int?
+  distanceMeters            Int?
+  /// What Wolt's distance measures is not documented: UNVERIFIED until checked.
+  distanceDefinition        String   @default("UNVERIFIED")
+  source                    String
+  recordedAt                DateTime @default(now())
+  updatedAt                 DateTime @updatedAt
 }

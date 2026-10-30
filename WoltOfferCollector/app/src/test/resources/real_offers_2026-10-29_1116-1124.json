@@ -1,0 +1,681 @@
+{
+ "source": "Real marker rows from the courier's phone, 29.10.2026 10:49–11:24 (redacted; only pickup business names in plain text). Courier CONFIRMED: 11:16, 11:18 and 11:23 offers were DECLINED; the 11:21 offer (₪18.55) EXPIRED on its own (no decline dialog).",
+ "rows": [
+  {
+   "at_ms": 1793263795023,
+   "candidate_state": "OFFLINE",
+   "markers": {
+    "source": "SCREEN",
+    "home_screen": true,
+    "status_button": "[TEXT×2] [UI:оффлайн]",
+    "availability_words": [
+     "оффлайн"
+    ],
+    "view_ids": [
+     "BottomSheet.PreviousTask",
+     "BottomSheet.PreviousTask.PrimaryLabel",
+     "BottomSheet.QuickLinksSection",
+     "BottomSheet.ScheduleOffline",
+     "BottomSheet.ScheduleOffline.PrimaryLabel",
+     "BottomSheet.Support",
+     "BottomSheet.Support.PrimaryLabel",
+     "FleetDemandWidgetWithoutNumber.DemandValue",
+     "FleetDemandWidgetWithoutNumber.Title",
+     "StatusButtons.SwipeButton",
+     "UpcomingBonusesBanner",
+     "UpcomingBonusesBanner.BonusOpportunityText"
+    ]
+   }
+  },
+  {
+   "at_ms": 1793263796880,
+   "candidate_state": "OFFLINE",
+   "markers": {
+    "source": "SCREEN",
+    "home_screen": true,
+    "status_button": "[TEXT×2] [UI:оффлайн]",
+    "availability_words": [
+     "оффлайн"
+    ],
+    "view_ids": [
+     "BottomSheet.PreviousTask.PrimaryLabel",
+     "BottomSheet.QuickLinksSection",
+     "BottomSheet.ScheduleOffline.PrimaryLabel",
+     "BottomSheet.Support.PrimaryLabel",
+     "FleetDemandWidgetWithoutNumber.DemandValue",
+     "FleetDemandWidgetWithoutNumber.Title",
+     "StatusButtons.SwipeButton",
+     "UpcomingBonusesBanner",
+     "UpcomingBonusesBanner.BonusOpportunityText"
+    ]
+   }
+  },
+  {
+   "at_ms": 1793265375834,
+   "candidate_state": "UNKNOWN",
+   "markers": {
+    "source": "NOTIFICATION",
+    "active_notifications": [
+     {
+      "channel": "wolt_background",
+      "ongoing": false,
+      "foreground_service": true,
+      "title_redacted": "[TEXT×2]",
+      "text_redacted": "[TEXT×2]"
+     }
+    ],
+    "notification_event": "REMOVED incoming_task"
+   }
+  },
+  {
+   "at_ms": 1793265376073,
+   "candidate_state": "UNKNOWN",
+   "markers": {
+    "source": "NOTIFICATION",
+    "active_notifications": [
+     {
+      "channel": "incoming_task",
+      "ongoing": false,
+      "foreground_service": false,
+      "title_redacted": "[TEXT×3] [UI:новый] [UI:заказ]",
+      "text_redacted": "[UI:принять] [TEXT×4]"
+     },
+     {
+      "channel": "wolt_background",
+      "ongoing": false,
+      "foreground_service": true,
+      "title_redacted": "[TEXT×2]",
+      "text_redacted": "[TEXT×2]"
+     }
+    ],
+    "notification_event": "REMOVED incoming_task"
+   }
+  },
+  {
+   "at_ms": 1793265376243,
+   "candidate_state": "OFFER_PRESENTED",
+   "markers": {
+    "source": "NOTIFICATION",
+    "active_notifications": [
+     {
+      "channel": "incoming_task",
+      "ongoing": false,
+      "foreground_service": false,
+      "title_redacted": "[TEXT×3] [UI:новый] [UI:заказ]",
+      "text_redacted": "[UI:принять] [TEXT×4]"
+     },
+     {
+      "channel": "wolt_background",
+      "ongoing": false,
+      "foreground_service": true,
+      "title_redacted": "[TEXT×2]",
+      "text_redacted": "[TEXT×2]"
+     }
+    ],
+    "notification_event": "POSTED incoming_task"
+   }
+  },
+  {
+   "at_ms": 1793265390717,
+   "candidate_state": "OFFER_PRESENTED",
+   "markers": {
+    "source": "SCREEN",
+    "offer_card": true,
+    "home_screen": true,
+    "status_button": "[TEXT×2] [UI:оффлайн]",
+    "availability_words": [
+     "оффлайн"
+    ],
+    "view_ids": [
+     "BottomSheet.PreviousTask.PrimaryLabel",
+     "BottomSheet.QuickLinksSection",
+     "BottomSheet.ScheduleOffline.PrimaryLabel",
+     "BottomSheet.Support.PrimaryLabel",
+     "FleetDemandWidgetWithoutNumber.DemandValue",
+     "FleetDemandWidgetWithoutNumber.Title",
+     "StatusButtons.SwipeButton",
+     "SwipeButton.Enabled",
+     "UpcomingBonusesBanner",
+     "UpcomingBonusesBanner.BonusOpportunityText"
+    ],
+    "offer_amount_agorot": 4126,
+    "offer_distance_km": "7.6",
+    "pickup_names": [
+     "Shufersal | Bat Yam"
+    ],
+    "package_size": "Тяжелая (более 16 кг)",
+    "sliders": [
+     {
+      "view_id": "SwipeButton.Enabled",
+      "cls": "ViewGroup",
+      "label_redacted": "[EMPTY]",
+      "words": []
+     },
+     {
+      "view_id": "StatusButtons.SwipeButton",
+      "cls": "Button",
+      "label_redacted": "[TEXT×2] [UI:оффлайн]",
+      "words": [
+       "оффлайн"
+      ]
+     }
+    ],
+    "ui_words": [
+     "доставки",
+     "задание",
+     "отказаться",
+     "оффлайн",
+     "принять"
+    ]
+   }
+  },
+  {
+   "at_ms": 1793265397218,
+   "candidate_state": "UNKNOWN",
+   "markers": {
+    "source": "SCREEN",
+    "ui_words": [
+     "доставки",
+     "доход",
+     "отказаться"
+    ]
+   }
+  },
+  {
+   "at_ms": 1793265398750,
+   "candidate_state": "OFFLINE",
+   "markers": {
+    "source": "SCREEN",
+    "home_screen": true,
+    "status_button": "[TEXT×2] [UI:оффлайн]",
+    "availability_words": [
+     "оффлайн"
+    ],
+    "view_ids": [
+     "BottomSheet.PreviousTask.PrimaryLabel",
+     "BottomSheet.QuickLinksSection",
+     "BottomSheet.ScheduleOffline.PrimaryLabel",
+     "BottomSheet.Support.PrimaryLabel",
+     "FleetDemandWidgetWithoutNumber.DemandValue",
+     "FleetDemandWidgetWithoutNumber.Title",
+     "StatusButtons.SwipeButton",
+     "SwipeButton.Enabled",
+     "UpcomingBonusesBanner",
+     "UpcomingBonusesBanner.BonusOpportunityText"
+    ],
+    "sliders": [
+     {
+      "view_id": "SwipeButton.Enabled",
+      "cls": "ViewGroup",
+      "label_redacted": "[EMPTY]",
+      "words": []
+     },
+     {
+      "view_id": "StatusButtons.SwipeButton",
+      "cls": "Button",
+      "label_redacted": "[TEXT×2] [UI:оффлайн]",
+      "words": [
+       "оффлайн"
+      ]
+     }
+    ],
+    "ui_words": [
+     "задание",
+     "оффлайн"
+    ]
+   }
+  },
+  {
+   "at_ms": 1793265524912,
+   "candidate_state": "UNKNOWN",
+   "markers": {
+    "source": "NOTIFICATION",
+    "active_notifications": [
+     {
+      "channel": "wolt_background",
+      "ongoing": false,
+      "foreground_service": true,
+      "title_redacted": "[TEXT×2]",
+      "text_redacted": "[TEXT×2]"
+     }
+    ],
+    "notification_event": "REMOVED incoming_task"
+   }
+  },
+  {
+   "at_ms": 1793265525190,
+   "candidate_state": "OFFER_PRESENTED",
+   "markers": {
+    "source": "NOTIFICATION",
+    "active_notifications": [
+     {
+      "channel": "incoming_task",
+      "ongoing": false,
+      "foreground_service": false,
+      "title_redacted": "[TEXT×3] [UI:новый] [UI:заказ]",
+      "text_redacted": "[UI:принять] [TEXT×4]"
+     },
+     {
+      "channel": "wolt_background",
+      "ongoing": false,
+      "foreground_service": true,
+      "title_redacted": "[TEXT×2]",
+      "text_redacted": "[TEXT×2]"
+     }
+    ],
+    "notification_event": "POSTED incoming_task"
+   }
+  },
+  {
+   "at_ms": 1793265533176,
+   "candidate_state": "OFFER_PRESENTED",
+   "markers": {
+    "source": "SCREEN",
+    "offer_card": true,
+    "home_screen": true,
+    "status_button": "[TEXT×2] [UI:оффлайн]",
+    "availability_words": [
+     "оффлайн"
+    ],
+    "view_ids": [
+     "BottomSheet.PreviousTask.PrimaryLabel",
+     "BottomSheet.QuickLinksSection",
+     "BottomSheet.ScheduleOffline.PrimaryLabel",
+     "BottomSheet.Support.PrimaryLabel",
+     "FleetDemandWidgetWithoutNumber.DemandValue",
+     "FleetDemandWidgetWithoutNumber.Title",
+     "StatusButtons.SwipeButton",
+     "SwipeButton.Enabled",
+     "UpcomingBonusesBanner",
+     "UpcomingBonusesBanner.BonusOpportunityText"
+    ],
+    "offer_amount_agorot": 3156,
+    "offer_distance_km": "6",
+    "pickup_names": [
+     "Shufersal | Bat Yam"
+    ],
+    "package_size": "Тяжелая (более 16 кг)",
+    "sliders": [
+     {
+      "view_id": "SwipeButton.Enabled",
+      "cls": "ViewGroup",
+      "label_redacted": "[EMPTY]",
+      "words": []
+     },
+     {
+      "view_id": "StatusButtons.SwipeButton",
+      "cls": "Button",
+      "label_redacted": "[TEXT×2] [UI:оффлайн]",
+      "words": [
+       "оффлайн"
+      ]
+     }
+    ],
+    "ui_words": [
+     "доставки",
+     "задание",
+     "отказаться",
+     "оффлайн",
+     "принять"
+    ]
+   }
+  },
+  {
+   "at_ms": 1793265565809,
+   "candidate_state": "OFFLINE",
+   "markers": {
+    "source": "SCREEN",
+    "home_screen": true,
+    "status_button": "[TEXT×2] [UI:оффлайн]",
+    "availability_words": [
+     "оффлайн"
+    ],
+    "view_ids": [
+     "BottomSheet.PreviousTask.PrimaryLabel",
+     "BottomSheet.QuickLinksSection",
+     "BottomSheet.ScheduleOffline.PrimaryLabel",
+     "BottomSheet.Support.PrimaryLabel",
+     "FleetDemandWidgetWithoutNumber.DemandValue",
+     "FleetDemandWidgetWithoutNumber.Title",
+     "StatusButtons.SwipeButton",
+     "SwipeButton.Enabled",
+     "UpcomingBonusesBanner",
+     "UpcomingBonusesBanner.BonusOpportunityText"
+    ],
+    "sliders": [
+     {
+      "view_id": "SwipeButton.Enabled",
+      "cls": "ViewGroup",
+      "label_redacted": "[EMPTY]",
+      "words": []
+     },
+     {
+      "view_id": "StatusButtons.SwipeButton",
+      "cls": "Button",
+      "label_redacted": "[TEXT×2] [UI:оффлайн]",
+      "words": [
+       "оффлайн"
+      ]
+     }
+    ],
+    "ui_words": [
+     "задание",
+     "оффлайн"
+    ]
+   }
+  },
+  {
+   "at_ms": 1793265566470,
+   "candidate_state": "UNKNOWN",
+   "markers": {
+    "source": "SCREEN",
+    "ui_words": [
+     "доставки",
+     "доход",
+     "отказаться"
+    ]
+   }
+  },
+  {
+   "at_ms": 1793265567882,
+   "candidate_state": "OFFLINE",
+   "markers": {
+    "source": "SCREEN",
+    "home_screen": true,
+    "status_button": "[TEXT×2] [UI:оффлайн]",
+    "availability_words": [
+     "оффлайн"
+    ],
+    "view_ids": [
+     "BottomSheet.PreviousTask.PrimaryLabel",
+     "BottomSheet.QuickLinksSection",
+     "BottomSheet.ScheduleOffline.PrimaryLabel",
+     "BottomSheet.Support.PrimaryLabel",
+     "FleetDemandWidgetWithoutNumber.DemandValue",
+     "FleetDemandWidgetWithoutNumber.Title",
+     "StatusButtons.SwipeButton",
+     "SwipeButton.Enabled",
+     "UpcomingBonusesBanner",
+     "UpcomingBonusesBanner.BonusOpportunityText"
+    ],
+    "sliders": [
+     {
+      "view_id": "SwipeButton.Enabled",
+      "cls": "ViewGroup",
+      "label_redacted": "[EMPTY]",
+      "words": []
+     },
+     {
+      "view_id": "StatusButtons.SwipeButton",
+      "cls": "Button",
+      "label_redacted": "[TEXT×2] [UI:оффлайн]",
+      "words": [
+       "оффлайн"
+      ]
+     }
+    ],
+    "ui_words": [
+     "задание",
+     "оффлайн"
+    ]
+   }
+  },
+  {
+   "at_ms": 1793265706236,
+   "candidate_state": "UNKNOWN",
+   "markers": {
+    "source": "NOTIFICATION",
+    "active_notifications": [
+     {
+      "channel": "wolt_background",
+      "ongoing": false,
+      "foreground_service": true,
+      "title_redacted": "[TEXT×2]",
+      "text_redacted": "[TEXT×2]"
+     }
+    ],
+    "notification_event": "REMOVED incoming_task"
+   }
+  },
+  {
+   "at_ms": 1793265706581,
+   "candidate_state": "OFFER_PRESENTED",
+   "markers": {
+    "source": "NOTIFICATION",
+    "active_notifications": [
+     {
+      "channel": "incoming_task",
+      "ongoing": false,
+      "foreground_service": false,
+      "title_redacted": "[TEXT×3] [UI:новый] [UI:заказ]",
+      "text_redacted": "[UI:принять] [TEXT×4]"
+     },
+     {
+      "channel": "wolt_background",
+      "ongoing": false,
+      "foreground_service": true,
+      "title_redacted": "[TEXT×2]",
+      "text_redacted": "[TEXT×2]"
+     }
+    ],
+    "notification_event": "POSTED incoming_task"
+   }
+  },
+  {
+   "at_ms": 1793265717242,
+   "candidate_state": "OFFER_PRESENTED",
+   "markers": {
+    "source": "SCREEN",
+    "offer_card": true,
+    "home_screen": true,
+    "status_button": "[TEXT×2] [UI:оффлайн]",
+    "availability_words": [
+     "оффлайн"
+    ],
+    "view_ids": [
+     "BottomSheet.PreviousTask.PrimaryLabel",
+     "BottomSheet.QuickLinksSection",
+     "BottomSheet.ScheduleOffline.PrimaryLabel",
+     "BottomSheet.Support.PrimaryLabel",
+     "FleetDemandWidgetWithoutNumber.DemandValue",
+     "FleetDemandWidgetWithoutNumber.Title",
+     "StatusButtons.SwipeButton",
+     "SwipeButton.Enabled",
+     "UpcomingBonusesBanner",
+     "UpcomingBonusesBanner.BonusOpportunityText"
+    ],
+    "offer_amount_agorot": 1855,
+    "offer_distance_km": "2.6",
+    "pickup_names": [
+     "Barda Schnitzel Be'Hala"
+    ],
+    "sliders": [
+     {
+      "view_id": "SwipeButton.Enabled",
+      "cls": "ViewGroup",
+      "label_redacted": "[EMPTY]",
+      "words": []
+     },
+     {
+      "view_id": "StatusButtons.SwipeButton",
+      "cls": "Button",
+      "label_redacted": "[TEXT×2] [UI:оффлайн]",
+      "words": [
+       "оффлайн"
+      ]
+     }
+    ],
+    "ui_words": [
+     "доставки",
+     "задание",
+     "отказаться",
+     "оффлайн",
+     "принять"
+    ]
+   }
+  },
+  {
+   "at_ms": 1793265778839,
+   "candidate_state": "AVAILABLE",
+   "markers": {
+    "source": "SCREEN",
+    "home_screen": true,
+    "status_button": "[TEXT×2] [UI:оффлайн]",
+    "availability_words": [
+     "оффлайн"
+    ],
+    "view_ids": [
+     "BottomSheet.PreviousTask",
+     "BottomSheet.PreviousTask.PrimaryLabel",
+     "BottomSheet.QuickLinksSection",
+     "BottomSheet.ScheduleOffline",
+     "BottomSheet.ScheduleOffline.PrimaryLabel",
+     "BottomSheet.Support",
+     "BottomSheet.Support.PrimaryLabel",
+     "FleetDemandWidgetWithoutNumber.DemandValue",
+     "FleetDemandWidgetWithoutNumber.Title",
+     "StatusButtons.SwipeButton",
+     "SwipeButton.Enabled",
+     "UpcomingBonusesBanner",
+     "UpcomingBonusesBanner.BonusOpportunityText"
+    ],
+    "sliders": [
+     {
+      "view_id": "SwipeButton.Enabled",
+      "cls": "ViewGroup",
+      "label_redacted": "[EMPTY]",
+      "words": []
+     },
+     {
+      "view_id": "StatusButtons.SwipeButton",
+      "cls": "Button",
+      "label_redacted": "[TEXT×2] [UI:оффлайн]",
+      "words": [
+       "оффлайн"
+      ]
+     }
+    ],
+    "ui_words": [
+     "задание",
+     "оффлайн"
+    ]
+   }
+  },
+  {
+   "at_ms": 1793265795803,
+   "candidate_state": "OFFER_PRESENTED",
+   "markers": {
+    "source": "SCREEN",
+    "offer_card": true,
+    "home_screen": true,
+    "status_button": "[TEXT×2] [UI:оффлайн]",
+    "availability_words": [
+     "оффлайн"
+    ],
+    "view_ids": [
+     "BottomSheet.PreviousTask",
+     "BottomSheet.PreviousTask.PrimaryLabel",
+     "BottomSheet.QuickLinksSection",
+     "BottomSheet.ScheduleOffline",
+     "BottomSheet.ScheduleOffline.PrimaryLabel",
+     "BottomSheet.Support",
+     "BottomSheet.Support.PrimaryLabel",
+     "FleetDemandWidgetWithoutNumber.DemandValue",
+     "FleetDemandWidgetWithoutNumber.Title",
+     "StatusButtons.SwipeButton",
+     "SwipeButton.Enabled",
+     "UpcomingBonusesBanner",
+     "UpcomingBonusesBanner.BonusOpportunityText"
+    ],
+    "offer_amount_agorot": 3314,
+    "offer_distance_km": "7.4",
+    "pickup_names": [
+     "Shufersal | Bat Yam"
+    ],
+    "package_size": "Тяжелая (более 16 кг)",
+    "sliders": [
+     {
+      "view_id": "SwipeButton.Enabled",
+      "cls": "ViewGroup",
+      "label_redacted": "[EMPTY]",
+      "words": []
+     },
+     {
+      "view_id": "StatusButtons.SwipeButton",
+      "cls": "Button",
+      "label_redacted": "[TEXT×2] [UI:оффлайн]",
+      "words": [
+       "оффлайн"
+      ]
+     }
+    ],
+    "ui_words": [
+     "доставки",
+     "задание",
+     "отказаться",
+     "оффлайн",
+     "принять"
+    ]
+   }
+  },
+  {
+   "at_ms": 1793265806828,
+   "candidate_state": "UNKNOWN",
+   "markers": {
+    "source": "SCREEN",
+    "ui_words": [
+     "доставки",
+     "доход",
+     "отказаться"
+    ]
+   }
+  },
+  {
+   "at_ms": 1793265808520,
+   "candidate_state": "AVAILABLE",
+   "markers": {
+    "source": "SCREEN",
+    "home_screen": true,
+    "status_button": "[TEXT×2] [UI:оффлайн]",
+    "availability_words": [
+     "оффлайн"
+    ],
+    "view_ids": [
+     "BottomSheet.PreviousTask",
+     "BottomSheet.PreviousTask.PrimaryLabel",
+     "BottomSheet.QuickLinksSection",
+     "BottomSheet.ScheduleOffline",
+     "BottomSheet.ScheduleOffline.PrimaryLabel",
+     "BottomSheet.Support",
+     "BottomSheet.Support.PrimaryLabel",
+     "FleetDemandWidgetWithoutNumber.DemandValue",
+     "FleetDemandWidgetWithoutNumber.Title",
+     "StatusButtons.SwipeButton",
+     "SwipeButton.Enabled",
+     "UpcomingBonusesBanner",
+     "UpcomingBonusesBanner.BonusOpportunityText"
+    ],
+    "sliders": [
+     {
+      "view_id": "SwipeButton.Enabled",
+      "cls": "ViewGroup",
+      "label_redacted": "[EMPTY]",
+      "words": []
+     },
+     {
+      "view_id": "StatusButtons.SwipeButton",
+      "cls": "Button",
+      "label_redacted": "[TEXT×2] [UI:оффлайн]",
+      "words": [
+       "оффлайн"
+      ]
+     }
+    ],
+    "ui_words": [
+     "задание",
+     "оффлайн"
+    ]
+   }
+  }
+ ]
+}

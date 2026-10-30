@@ -3,6 +3,9 @@ import { ZodError } from "zod";
 import { Prisma } from "@prisma/client";
 import { LinkConflictError, LinkValidationError } from "@/lib/analytics/shifts";
 import { ImportValidationError } from "@/lib/import/service";
+import { OfferImportError } from "@/lib/offers/import";
+import { OfferUpdateError } from "@/lib/offers/service";
+import { SimulationInputError } from "@/lib/offers/simulator";
 
 export function json(data: unknown, init?: ResponseInit) {
   return NextResponse.json(data, init);
@@ -18,7 +21,9 @@ export async function handle(fn: () => Promise<unknown>) {
       return json({ error: "קלט לא תקין", issues: e.issues.map((i) => `${i.path.join(".")}: ${i.message}`) }, { status: 400 });
     if (e instanceof LinkConflictError) return json({ error: e.message, conflicts: e.conflicts }, { status: 409 });
     if (e instanceof LinkValidationError) return json({ error: e.message, recordIds: e.recordIds }, { status: 422 });
-    if (e instanceof ImportValidationError) return json({ error: e.message }, { status: 422 });
+    if (e instanceof ImportValidationError || e instanceof OfferImportError || e instanceof SimulationInputError)
+      return json({ error: e.message }, { status: 422 });
+    if (e instanceof OfferUpdateError) return json({ error: e.message }, { status: e.status });
     if (e instanceof Prisma.PrismaClientKnownRequestError && e.code === "P2025") return json({ error: "לא נמצא" }, { status: 404 });
     if (e instanceof Error && /^(שעת|שעות|תאריך)/.test(e.message)) return json({ error: e.message }, { status: 400 });
     console.error(e);

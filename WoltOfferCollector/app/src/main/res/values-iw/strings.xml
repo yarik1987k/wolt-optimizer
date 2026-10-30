@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Offer Collector</string>
+    <string name="notification_listener_label">Offer Collector — התראות (רק מהאפליקציה שנבחרה)</string>
+    <string name="accessibility_label">Offer Collector — בדיקת מסך לקריאה בלבד</string>
+    <string name="accessibility_summary">קורא טקסט נגיש רק מהאפליקציה שבחרת, לקריאה בלבד, כדי לבדוק אם פרטי הצעה גלויים. לעולם לא לוחץ ולא משנה דבר.</string>
+    <string name="accessibility_description">בדיקת היתכנות לקריאה בלבד. השירות קורא רק את עץ הטקסט הנגיש של האפליקציה האחת שבחרת ב-Offer Collector, מסתיר במכשיר שמות, כתובות, טלפונים וטקסט חופשי לפני שמירה, ואינו מבצע לחיצות, מחוות או חלונות צפים. אפשר לעצור בכל רגע מהאפליקציה או ממסך זה.</string>
+</resources>

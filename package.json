@@ -11,13 +11,21 @@
     "test": "vitest run",
     "test:e2e": "npm run build && playwright test",
     "typecheck": "tsc --noEmit",
-    "setup": "npm run db:migrate && npm run db:seed"
+    "setup": "npm run db:migrate && npm run db:seed",
+    "offers:import": "tsx scripts/import-offers.ts",
+    "reconcile": "tsx scripts/reconcile.ts",
+    "chains:report": "tsx scripts/chain-report.ts",
+    "eta:report": "tsx scripts/eta-report.ts",
+    "performance:report": "tsx scripts/performance-report.ts",
+    "evidence:report": "tsx scripts/evidence-report.ts"
   },
   "dependencies": {
+    "@mapbox/mapbox-gl-rtl-text": "0.4.0",
     "@prisma/client": "^6.19.3",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "lucide-react": "^1.63.0",
+    "maplibre-gl": "6.13.0",
     "next": "^16.4.3",
     "papaparse": "^5.7.0",
     "react": "^19.3.1",

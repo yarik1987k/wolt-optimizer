@@ -1,0 +1,467 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 2,
+    "identityHash": "3b72dd620a60f290cc8a78441b74af40",
+    "entities": [
+      {
+        "tableName": "notification_events",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `observed_at_utc` INTEGER NOT NULL, `source_package` TEXT NOT NULL, `notification_key_hash` TEXT, `event_type` TEXT NOT NULL, `title_redacted` TEXT, `text_redacted` TEXT, `fields_present_json` TEXT NOT NULL, `removal_reason` TEXT, `content_signature_hash` TEXT, `created_at_utc` INTEGER NOT NULL, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "observedAtUtc",
+            "columnName": "observed_at_utc",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "sourcePackage",
+            "columnName": "source_package",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "notificationKeyHash",
+            "columnName": "notification_key_hash",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "eventType",
+            "columnName": "event_type",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "titleRedacted",
+            "columnName": "title_redacted",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "textRedacted",
+            "columnName": "text_redacted",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "fieldsPresentJson",
+            "columnName": "fields_present_json",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "removalReason",
+            "columnName": "removal_reason",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "contentSignatureHash",
+            "columnName": "content_signature_hash",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "createdAtUtc",
+            "columnName": "created_at_utc",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_notification_events_observed_at_utc",
+            "unique": false,
+            "columnNames": [
+              "observed_at_utc"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_notification_events_observed_at_utc` ON `${TABLE_NAME}` (`observed_at_utc`)"
+          },
+          {
+            "name": "index_notification_events_notification_key_hash",
+            "unique": false,
+            "columnNames": [
+              "notification_key_hash"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_notification_events_notification_key_hash` ON `${TABLE_NAME}` (`notification_key_hash`)"
+          }
+        ]
+      },
+      {
+        "tableName": "screen_events",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `observed_at_utc` INTEGER NOT NULL, `source_package` TEXT NOT NULL, `event_type` TEXT NOT NULL, `screen_category` TEXT NOT NULL, `accessible_node_count` INTEGER, `text_node_count` INTEGER, `redacted_candidate_fields_json` TEXT, `capture_status` TEXT NOT NULL, `failure_reason` TEXT, `parse_version` TEXT NOT NULL, `fingerprint_hash` TEXT, `window_class` TEXT, `snapshot_latency_ms` INTEGER, `coalesced_event_count` INTEGER NOT NULL, `seconds_since_source_notification` REAL, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "observedAtUtc",
+            "columnName": "observed_at_utc",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "sourcePackage",
+            "columnName": "source_package",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "eventType",
+            "columnName": "event_type",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "screenCategory",
+            "columnName": "screen_category",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "accessibleNodeCount",
+            "columnName": "accessible_node_count",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "textNodeCount",
+            "columnName": "text_node_count",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "redactedCandidateFieldsJson",
+            "columnName": "redacted_candidate_fields_json",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "captureStatus",
+            "columnName": "capture_status",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "failureReason",
+            "columnName": "failure_reason",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "parseVersion",
+            "columnName": "parse_version",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "fingerprintHash",
+            "columnName": "fingerprint_hash",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "windowClass",
+            "columnName": "window_class",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "snapshotLatencyMs",
+            "columnName": "snapshot_latency_ms",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "coalescedEventCount",
+            "columnName": "coalesced_event_count",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "secondsSinceSourceNotification",
+            "columnName": "seconds_since_source_notification",
+            "affinity": "REAL"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_screen_events_observed_at_utc",
+            "unique": false,
+            "columnNames": [
+              "observed_at_utc"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_screen_events_observed_at_utc` ON `${TABLE_NAME}` (`observed_at_utc`)"
+          },
+          {
+            "name": "index_screen_events_fingerprint_hash",
+            "unique": false,
+            "columnNames": [
+              "fingerprint_hash"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_screen_events_fingerprint_hash` ON `${TABLE_NAME}` (`fingerprint_hash`)"
+          }
+        ]
+      },
+      {
+        "tableName": "offer_candidates",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `first_observed_at_utc` INTEGER NOT NULL, `last_observed_at_utc` INTEGER NOT NULL, `notification_event_id` TEXT, `screen_event_id` TEXT, `offered_amount_agorot` INTEGER, `merchant_names_redacted_or_business_only` TEXT, `pickup_area` TEXT, `dropoff_area` TEXT, `stops_count` INTEGER, `status` TEXT NOT NULL, `parse_confidence` REAL, `correlation_confidence` REAL, `source_type` TEXT NOT NULL, `parser_version` TEXT NOT NULL, `created_at_utc` INTEGER NOT NULL, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "firstObservedAtUtc",
+            "columnName": "first_observed_at_utc",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "lastObservedAtUtc",
+            "columnName": "last_observed_at_utc",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "notificationEventId",
+            "columnName": "notification_event_id",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "screenEventId",
+            "columnName": "screen_event_id",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "offeredAmountAgorot",
+            "columnName": "offered_amount_agorot",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "merchantNames",
+            "columnName": "merchant_names_redacted_or_business_only",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "pickupArea",
+            "columnName": "pickup_area",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "dropoffArea",
+            "columnName": "dropoff_area",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "stopsCount",
+            "columnName": "stops_count",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "status",
+            "columnName": "status",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "parseConfidence",
+            "columnName": "parse_confidence",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "correlationConfidence",
+            "columnName": "correlation_confidence",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "sourceType",
+            "columnName": "source_type",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "parserVersion",
+            "columnName": "parser_version",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "createdAtUtc",
+            "columnName": "created_at_utc",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_offer_candidates_first_observed_at_utc",
+            "unique": false,
+            "columnNames": [
+              "first_observed_at_utc"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_offer_candidates_first_observed_at_utc` ON `${TABLE_NAME}` (`first_observed_at_utc`)"
+          }
+        ]
+      },
+      {
+        "tableName": "state_marker_events",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `observed_at_utc` INTEGER NOT NULL, `source` TEXT NOT NULL, `candidate_state` TEXT NOT NULL, `evidence` TEXT NOT NULL, `rule` TEXT NOT NULL, `markers_json` TEXT NOT NULL, `parse_version` TEXT NOT NULL, `test_session_id` TEXT, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "observedAtUtc",
+            "columnName": "observed_at_utc",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "source",
+            "columnName": "source",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "candidateState",
+            "columnName": "candidate_state",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "evidence",
+            "columnName": "evidence",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "rule",
+            "columnName": "rule",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "markersJson",
+            "columnName": "markers_json",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "parseVersion",
+            "columnName": "parse_version",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "testSessionId",
+            "columnName": "test_session_id",
+            "affinity": "TEXT"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_state_marker_events_observed_at_utc",
+            "unique": false,
+            "columnNames": [
+              "observed_at_utc"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_state_marker_events_observed_at_utc` ON `${TABLE_NAME}` (`observed_at_utc`)"
+          },
+          {
+            "name": "index_state_marker_events_test_session_id",
+            "unique": false,
+            "columnNames": [
+              "test_session_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_state_marker_events_test_session_id` ON `${TABLE_NAME}` (`test_session_id`)"
+          }
+        ]
+      },
+      {
+        "tableName": "test_sessions",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `label` TEXT NOT NULL, `started_at_utc` INTEGER NOT NULL, `ended_at_utc` INTEGER, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "label",
+            "columnName": "label",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "startedAtUtc",
+            "columnName": "started_at_utc",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "endedAtUtc",
+            "columnName": "ended_at_utc",
+            "affinity": "INTEGER"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_test_sessions_started_at_utc",
+            "unique": false,
+            "columnNames": [
+              "started_at_utc"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_test_sessions_started_at_utc` ON `${TABLE_NAME}` (`started_at_utc`)"
+          }
+        ]
+      }
+    ],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '3b72dd620a60f290cc8a78441b74af40')"
+    ]
+  }
+}

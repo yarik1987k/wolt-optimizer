@@ -1,0 +1,258 @@
+{
+ "source": "REAL state_marker_events from the phone export 29.10.2026 11:40:47–11:41:05 (Poke Bar ₪42.65). Courier declined it. At 11:40:56 a screen with only \"готово\" flashed — \"Готово\" = order ready at the restaurant (courier), not a delivery step.",
+ "rows": [
+  {
+   "at_ms": 1793266847037,
+   "candidate_state": "OFFER_PRESENTED",
+   "markers": {
+    "source": "NOTIFICATION",
+    "active_notifications": [
+     {
+      "channel": "incoming_task",
+      "ongoing": false,
+      "foreground_service": false,
+      "title_redacted": "[TEXT×3] [UI:новый] [UI:заказ]",
+      "text_redacted": "[UI:принять] [TEXT×4]"
+     },
+     {
+      "channel": "wolt_background",
+      "ongoing": false,
+      "foreground_service": true,
+      "title_redacted": "[TEXT×2]",
+      "text_redacted": "[TEXT×2]"
+     }
+    ],
+    "notification_event": "POSTED incoming_task"
+   }
+  },
+  {
+   "at_ms": 1793266849458,
+   "candidate_state": "OFFER_PRESENTED",
+   "markers": {
+    "source": "SCREEN",
+    "offer_card": true,
+    "home_screen": true,
+    "status_button": "[TEXT×2] [UI:оффлайн]",
+    "availability_words": [
+     "оффлайн"
+    ],
+    "view_ids": [
+     "BottomSheet.PreviousTask",
+     "BottomSheet.PreviousTask.PrimaryLabel",
+     "BottomSheet.QuickLinksSection",
+     "BottomSheet.ScheduleOffline",
+     "BottomSheet.ScheduleOffline.PrimaryLabel",
+     "BottomSheet.Support",
+     "BottomSheet.Support.PrimaryLabel",
+     "FleetDemandWidgetWithoutNumber.DemandValue",
+     "FleetDemandWidgetWithoutNumber.Title",
+     "StatusButtons.SwipeButton",
+     "SwipeButton.Enabled",
+     "UpcomingBonusesBanner",
+     "UpcomingBonusesBanner.BonusOpportunityText"
+    ],
+    "offer_amount_agorot": 4265,
+    "offer_distance_km": "10.2",
+    "pickup_names": [
+     "Poke Bar | Rishon Lezion"
+    ],
+    "sliders": [
+     {
+      "view_id": "SwipeButton.Enabled",
+      "cls": "ViewGroup",
+      "label_redacted": "[EMPTY]",
+      "words": []
+     },
+     {
+      "view_id": "StatusButtons.SwipeButton",
+      "cls": "Button",
+      "label_redacted": "[TEXT×2] [UI:оффлайн]",
+      "words": [
+       "оффлайн"
+      ]
+     }
+    ],
+    "ui_words": [
+     "задание",
+     "отказаться",
+     "оффлайн",
+     "принять"
+    ]
+   }
+  },
+  {
+   "at_ms": 1793266856032,
+   "candidate_state": "DELIVERY_ACTIVE",
+   "markers": {
+    "source": "SCREEN",
+    "delivery_step_words": [
+     "готово"
+    ],
+    "ui_words": [
+     "готово"
+    ]
+   }
+  },
+  {
+   "at_ms": 1793266858039,
+   "candidate_state": "OFFER_PRESENTED",
+   "markers": {
+    "source": "SCREEN",
+    "offer_card": true,
+    "home_screen": true,
+    "status_button": "[TEXT×2] [UI:оффлайн]",
+    "availability_words": [
+     "оффлайн"
+    ],
+    "view_ids": [
+     "BottomSheet.PreviousTask",
+     "BottomSheet.PreviousTask.PrimaryLabel",
+     "BottomSheet.QuickLinksSection",
+     "BottomSheet.ScheduleOffline",
+     "BottomSheet.ScheduleOffline.PrimaryLabel",
+     "BottomSheet.Support",
+     "BottomSheet.Support.PrimaryLabel",
+     "FleetDemandWidgetWithoutNumber.DemandValue",
+     "FleetDemandWidgetWithoutNumber.Title",
+     "StatusButtons.SwipeButton",
+     "SwipeButton.Enabled",
+     "UpcomingBonusesBanner",
+     "UpcomingBonusesBanner.BonusOpportunityText"
+    ],
+    "offer_amount_agorot": 4265,
+    "offer_distance_km": "10.2",
+    "pickup_names": [
+     "Poke Bar | Rishon Lezion"
+    ],
+    "sliders": [
+     {
+      "view_id": "SwipeButton.Enabled",
+      "cls": "ViewGroup",
+      "label_redacted": "[EMPTY]",
+      "words": []
+     },
+     {
+      "view_id": "StatusButtons.SwipeButton",
+      "cls": "Button",
+      "label_redacted": "[TEXT×2] [UI:оффлайн]",
+      "words": [
+       "оффлайн"
+      ]
+     }
+    ],
+    "ui_words": [
+     "задание",
+     "отказаться",
+     "оффлайн",
+     "принять"
+    ]
+   }
+  },
+  {
+   "at_ms": 1793266863938,
+   "candidate_state": "AVAILABLE",
+   "markers": {
+    "source": "SCREEN",
+    "home_screen": true,
+    "status_button": "[TEXT×2] [UI:оффлайн]",
+    "availability_words": [
+     "оффлайн"
+    ],
+    "view_ids": [
+     "BottomSheet.PreviousTask",
+     "BottomSheet.PreviousTask.PrimaryLabel",
+     "BottomSheet.QuickLinksSection",
+     "BottomSheet.ScheduleOffline",
+     "BottomSheet.ScheduleOffline.PrimaryLabel",
+     "BottomSheet.Support",
+     "BottomSheet.Support.PrimaryLabel",
+     "FleetDemandWidgetWithoutNumber.DemandValue",
+     "FleetDemandWidgetWithoutNumber.Title",
+     "StatusButtons.SwipeButton",
+     "SwipeButton.Enabled",
+     "UpcomingBonusesBanner",
+     "UpcomingBonusesBanner.BonusOpportunityText"
+    ],
+    "sliders": [
+     {
+      "view_id": "SwipeButton.Enabled",
+      "cls": "ViewGroup",
+      "label_redacted": "[EMPTY]",
+      "words": []
+     },
+     {
+      "view_id": "StatusButtons.SwipeButton",
+      "cls": "Button",
+      "label_redacted": "[TEXT×2] [UI:оффлайн]",
+      "words": [
+       "оффлайн"
+      ]
+     }
+    ],
+    "ui_words": [
+     "задание",
+     "оффлайн"
+    ]
+   }
+  },
+  {
+   "at_ms": 1793266864641,
+   "candidate_state": "UNKNOWN",
+   "markers": {
+    "source": "SCREEN",
+    "ui_words": [
+     "доставки",
+     "доход",
+     "отказаться"
+    ]
+   }
+  },
+  {
+   "at_ms": 1793266865637,
+   "candidate_state": "AVAILABLE",
+   "markers": {
+    "source": "SCREEN",
+    "home_screen": true,
+    "status_button": "[TEXT×2] [UI:оффлайн]",
+    "availability_words": [
+     "оффлайн"
+    ],
+    "view_ids": [
+     "BottomSheet.PreviousTask",
+     "BottomSheet.PreviousTask.PrimaryLabel",
+     "BottomSheet.QuickLinksSection",
+     "BottomSheet.ScheduleOffline",
+     "BottomSheet.ScheduleOffline.PrimaryLabel",
+     "BottomSheet.Support",
+     "BottomSheet.Support.PrimaryLabel",
+     "FleetDemandWidgetWithoutNumber.DemandValue",
+     "FleetDemandWidgetWithoutNumber.Title",
+     "StatusButtons.SwipeButton",
+     "SwipeButton.Enabled",
+     "UpcomingBonusesBanner",
+     "UpcomingBonusesBanner.BonusOpportunityText"
+    ],
+    "sliders": [
+     {
+      "view_id": "SwipeButton.Enabled",
+      "cls": "ViewGroup",
+      "label_redacted": "[EMPTY]",
+      "words": []
+     },
+     {
+      "view_id": "StatusButtons.SwipeButton",
+      "cls": "Button",
+      "label_redacted": "[TEXT×2] [UI:оффлайн]",
+      "words": [
+       "оффлайн"
+      ]
+     }
+    ],
+    "ui_words": [
+     "задание",
+     "оффлайн"
+    ]
+   }
+  }
+ ]
+}

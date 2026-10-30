@@ -1,0 +1,271 @@
+{
+ "source": "REAL: Wolt Optimizer dev.db, confirmed offer cards 29.10.2026 (from the Collector exports); expected = TypeScript analyzeOffers() output",
+ "points": [
+  {
+   "firstSeenMs": 1793259627925,
+   "amountAgorot": 2749,
+   "distanceMeters": 4500,
+   "onScreenSeconds": 6
+  },
+  {
+   "firstSeenMs": 1793260168715,
+   "amountAgorot": 3502,
+   "distanceMeters": 6800,
+   "onScreenSeconds": 5
+  },
+  {
+   "firstSeenMs": 1793262281980,
+   "amountAgorot": 4016,
+   "distanceMeters": 8100,
+   "onScreenSeconds": 5
+  },
+  {
+   "firstSeenMs": 1793265390717,
+   "amountAgorot": 4126,
+   "distanceMeters": 7600,
+   "onScreenSeconds": 5
+  },
+  {
+   "firstSeenMs": 1793265533176,
+   "amountAgorot": 3156,
+   "distanceMeters": 6000,
+   "onScreenSeconds": 5
+  },
+  {
+   "firstSeenMs": 1793265717242,
+   "amountAgorot": 1855,
+   "distanceMeters": 2600,
+   "onScreenSeconds": 5
+  },
+  {
+   "firstSeenMs": 1793265795803,
+   "amountAgorot": 3314,
+   "distanceMeters": 7400,
+   "onScreenSeconds": 3
+  },
+  {
+   "firstSeenMs": 1793266582692,
+   "amountAgorot": 2725,
+   "distanceMeters": 3000,
+   "onScreenSeconds": 3
+  },
+  {
+   "firstSeenMs": 1793266673257,
+   "amountAgorot": 1757,
+   "distanceMeters": 3900,
+   "onScreenSeconds": 1
+  },
+  {
+   "firstSeenMs": 1793266726126,
+   "amountAgorot": 3664,
+   "distanceMeters": 8500,
+   "onScreenSeconds": 1
+  },
+  {
+   "firstSeenMs": 1793266849458,
+   "amountAgorot": 4265,
+   "distanceMeters": 10200,
+   "onScreenSeconds": 5
+  },
+  {
+   "firstSeenMs": 1793267004190,
+   "amountAgorot": 2253,
+   "distanceMeters": 5800,
+   "onScreenSeconds": 4
+  },
+  {
+   "firstSeenMs": 1793268231138,
+   "amountAgorot": 2071,
+   "distanceMeters": 3300,
+   "onScreenSeconds": 1
+  },
+  {
+   "firstSeenMs": 1793269345042,
+   "amountAgorot": 3103,
+   "distanceMeters": 6400,
+   "onScreenSeconds": 5
+  },
+  {
+   "firstSeenMs": 1793269401234,
+   "amountAgorot": 3681,
+   "distanceMeters": 5400,
+   "onScreenSeconds": 5
+  },
+  {
+   "firstSeenMs": 1793269470076,
+   "amountAgorot": 2173,
+   "distanceMeters": 3500,
+   "onScreenSeconds": 4
+  },
+  {
+   "firstSeenMs": 1793269615143,
+   "amountAgorot": 2639,
+   "distanceMeters": 4900,
+   "onScreenSeconds": 2
+  },
+  {
+   "firstSeenMs": 1793269671783,
+   "amountAgorot": 3373,
+   "distanceMeters": 9100,
+   "onScreenSeconds": 16
+  },
+  {
+   "firstSeenMs": 1793270302799,
+   "amountAgorot": 3514,
+   "distanceMeters": 5300,
+   "onScreenSeconds": 5
+  }
+ ],
+ "expected": {
+  "observed_offer_count": 19,
+  "verified_offer_count": 2,
+  "confirmed_card_count": 19,
+  "partial_card_count": 0,
+  "amount": {
+   "n": 19,
+   "sum": 57936,
+   "mean": 3049.2631578947367,
+   "median": 3156,
+   "sd": 773.7992017819369,
+   "min": 1757,
+   "max": 4265
+  },
+  "distance_m": {
+   "n": 19,
+   "sum": 112300,
+   "mean": 5910.526315789473,
+   "median": 5800,
+   "sd": 2185.0234519062074,
+   "min": 2600,
+   "max": 10200
+  },
+  "offers_with_distance": 19,
+  "agorot_per_km_aggregate": 515.9038290293856,
+  "agorot_per_km": {
+   "n": 19,
+   "sum": 10435.568933560633,
+   "mean": 549.2404701874017,
+   "median": 526,
+   "sd": 133.1798049378753,
+   "min": 370.65934065934067,
+   "max": 908.3333333333334
+  },
+  "by_hour": [
+   {
+    "hour": 9,
+    "n": 2,
+    "mean_amount_agorot": 3125.5,
+    "median_amount_agorot": 3125.5,
+    "sum_agorot": 6251
+   },
+   {
+    "hour": 10,
+    "n": 1,
+    "mean_amount_agorot": 4016,
+    "median_amount_agorot": 4016,
+    "sum_agorot": 4016
+   },
+   {
+    "hour": 11,
+    "n": 9,
+    "mean_amount_agorot": 3012.777777777778,
+    "median_amount_agorot": 3156,
+    "sum_agorot": 27115
+   },
+   {
+    "hour": 12,
+    "n": 7,
+    "mean_amount_agorot": 2936.285714285714,
+    "median_amount_agorot": 3103,
+    "sum_agorot": 20554
+   }
+  ],
+  "distribution": [
+   {
+    "from_agorot": 1500,
+    "to_agorot": 2000,
+    "n": 2
+   },
+   {
+    "from_agorot": 2000,
+    "to_agorot": 2500,
+    "n": 3
+   },
+   {
+    "from_agorot": 2500,
+    "to_agorot": 3000,
+    "n": 3
+   },
+   {
+    "from_agorot": 3000,
+    "to_agorot": 3500,
+    "n": 4
+   },
+   {
+    "from_agorot": 3500,
+    "to_agorot": 4000,
+    "n": 4
+   },
+   {
+    "from_agorot": 4000,
+    "to_agorot": 4500,
+    "n": 3
+   }
+  ],
+  "gaps_minutes": {
+   "n": 18,
+   "sum": 177.91456666666667,
+   "mean": 9.884142592592593,
+   "median": 2.4983250000000004,
+   "sd": 14.001677548690047,
+   "min": 0.88115,
+   "max": 51.81228333333333
+  },
+  "thresholds": [
+   {
+    "threshold_shekel": 25,
+    "n_at_or_above": 14,
+    "share": 0.7368421052631579
+   },
+   {
+    "threshold_shekel": 30,
+    "n_at_or_above": 11,
+    "share": 0.5789473684210527
+   },
+   {
+    "threshold_shekel": 35,
+    "n_at_or_above": 7,
+    "share": 0.3684210526315789
+   },
+   {
+    "threshold_shekel": 40,
+    "n_at_or_above": 3,
+    "share": 0.15789473684210525
+   },
+   {
+    "threshold_shekel": 45,
+    "n_at_or_above": 0,
+    "share": 0
+   },
+   {
+    "threshold_shekel": 50,
+    "n_at_or_above": 0,
+    "share": 0
+   },
+   {
+    "threshold_shekel": 60,
+    "n_at_or_above": 0,
+    "share": 0
+   }
+  ],
+  "on_screen_seconds": {
+   "n": 19,
+   "sum": 86,
+   "mean": 4.526315789473684,
+   "median": 5,
+   "sd": 3.203616377585937,
+   "min": 1,
+   "max": 16
+  }
+ }
+}

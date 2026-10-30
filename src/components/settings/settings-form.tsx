@@ -14,6 +14,8 @@ export function SettingsForm({ settings }: { settings: AppSettings }) {
   const [minObs, setMinObs] = useState(String(settings.minSampleObservation));
   const [minTest, setMinTest] = useState(String(settings.minSampleTestCandidate));
   const [minShifts, setMinShifts] = useState(String(settings.minShiftsPerGroup));
+  const [speed, setSpeed] = useState(settings.hotspotAvgSpeedKmh != null ? String(settings.hotspotAvgSpeedKmh) : "");
+  const [acceptPct, setAcceptPct] = useState(settings.hotspotAcceptShare != null ? String(Math.round(settings.hotspotAcceptShare * 1000) / 10) : "");
   const [msg, setMsg] = useState<{ level: "success" | "error"; text: string } | null>(null);
   const lines = (s: string) => s.split("\n").map((x) => x.trim()).filter(Boolean);
 
@@ -28,6 +30,8 @@ export function SettingsForm({ settings }: { settings: AppSettings }) {
         minSampleObservation: Number(minObs),
         minSampleTestCandidate: Number(minTest),
         minShiftsPerGroup: Number(minShifts),
+        hotspotAvgSpeedKmh: speed.trim() ? Number(speed) : null,
+        hotspotAcceptShare: acceptPct.trim() ? Number(acceptPct) / 100 : null,
       }),
     });
     const body = await res.json();
@@ -68,6 +72,16 @@ export function SettingsForm({ settings }: { settings: AppSettings }) {
       <Label>
         מינימום משמרות לכל קבוצה בניסוי
         <Input type="number" min="1" value={minShifts} onChange={(e) => setMinShifts(e.target.value)} />
+      </Label>
+      <Label>
+        מהירות ממוצעת למעבר בין אזורים (קמ״ש) — לעמוד אזורים
+        <Input type="number" min="1" max="200" step="1" value={speed} onChange={(e) => setSpeed(e.target.value)} placeholder="לא הוגדר" />
+        <Hint>הנחה שלך, לחישוב זמן נסיעה בקו אווירי בין מרכזי תאים. המערכת לא מעריכה אותה.</Hint>
+      </Label>
+      <Label>
+        שיעור קבלת הצעות (%) — לעמוד אזורים
+        <Input type="number" min="0" max="100" step="1" value={acceptPct} onChange={(e) => setAcceptPct(e.target.value)} placeholder="לפי הנתונים שנצפו" />
+        <Hint>ריק = לפי אירועי קבלה/דחייה שזוהו ב-Collector (אם יש).</Hint>
       </Label>
       {msg && <Alert level={msg.level} className="sm:col-span-2">{msg.text}</Alert>}
       <div className="flex flex-wrap gap-2 sm:col-span-2">

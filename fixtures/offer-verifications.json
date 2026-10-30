@@ -1,0 +1,17 @@
+{
+  "description": "Offers verified MANUALLY by the courier. Only these are USER_VERIFIED; offers detected automatically stay UNVERIFIED.",
+  "verifications": [
+    {
+      "firstSeenAtUtc": "2026-10-29T07:40:27.925Z",
+      "amountAgorot": 2749,
+      "distanceKm": "4.5",
+      "source": "אימות ידני של השליח בשיחה, 29.10.2026: הצעה אמיתית בזמן אמת ב-09:40 (שעון ישראל) — הוצגו ₪27.49 ו-4.5 ק״מ, זהה למה שנקרא"
+    },
+    {
+      "firstSeenAtUtc": "2026-10-29T07:49:28.715Z",
+      "amountAgorot": 3502,
+      "distanceKm": "6.8",
+      "source": "אימות ידני של השליח בשיחה, 29.10.2026: הצעה אמיתית בזמן אמת ב-09:49 (שעון ישראל) — הוצגו ₪35.02 ו-6.8 ק״מ, זהה למה שנקרא"
+    }
+  ]
+}

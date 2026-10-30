@@ -1,0 +1,9 @@
+-- Delivery chains: overlapping accepted offers (additive).
+ALTER TABLE "CollectorTrip" ADD COLUMN "chainKey" TEXT;
+ALTER TABLE "CollectorTrip" ADD COLUMN "acceptContext" TEXT;
+ALTER TABLE "CollectorTrip" ADD COLUMN "carriedOrders" INTEGER;
+ALTER TABLE "CollectorTrip" ADD COLUMN "carriedLink" TEXT;
+ALTER TABLE "CollectorTrip" ADD COLUMN "newOrdersLow" INTEGER;
+ALTER TABLE "CollectorTrip" ADD COLUMN "newOrdersHigh" INTEGER;
+ALTER TABLE "CollectorTrip" ADD COLUMN "tripBoundaryValid" BOOLEAN;
+ALTER TABLE "CollectorTrip" ADD COLUMN "chainNotesJson" TEXT;

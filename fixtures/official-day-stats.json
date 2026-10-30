@@ -1,0 +1,15 @@
+{
+  "note": "Typed in from Wolt's own statistics screen (Ваша статистика → Промежуток, 29.10.2026–29.10.2026). Ground truth for day totals only.",
+  "days": [
+    {
+      "day": "2026-10-29",
+      "completedDeliveries": 10,
+      "earningsAgorot": 22950,
+      "earningsWithoutTipsAgorot": 21950,
+      "tipsAgorot": 1000,
+      "distanceMeters": 37900,
+      "distanceDefinition": "UNVERIFIED",
+      "source": "Wolt app statistics screenshot, 30.10.2026 00:12"
+    }
+  ]
+}

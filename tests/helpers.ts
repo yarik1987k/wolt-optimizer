@@ -16,7 +16,25 @@ export function fixtureWithDuplicateReportCopy(): string {
   return [...lines, ...copies].join("\n") + "\n";
 }
 
+export const OFFER_EXPORT_NAME = "offer-collector-export-2026-10-29.json";
+export const offerExportText = () => readFileSync(resolve(__dirname, "../fixtures", OFFER_EXPORT_NAME), "utf8");
+export const offerVerifications = () =>
+  JSON.parse(readFileSync(resolve(__dirname, "../fixtures/offer-verifications.json"), "utf8")).verifications;
+
 export async function resetDb() {
+  await prisma.locationSample.deleteMany();
+  await prisma.collectorShift.deleteMany();
+  await prisma.collectorDeliveryEvent.deleteMany();
+  await prisma.collectorTrip.deleteMany();
+  await prisma.officialDayStat.deleteMany();
+  await prisma.collectorChain.deleteMany();
+  await prisma.collectorEtaCheck.deleteMany();
+  await prisma.collectorPickupPlace.deleteMany();
+  await prisma.shadowPrediction.deleteMany();
+  await prisma.collectorTrackPoint.deleteMany();
+  await prisma.offerObservation.deleteMany();
+  await prisma.offer.deleteMany();
+  await prisma.offerImportBatch.deleteMany();
   await prisma.experimentShift.deleteMany();
   await prisma.experiment.deleteMany();
   await prisma.insight.deleteMany();

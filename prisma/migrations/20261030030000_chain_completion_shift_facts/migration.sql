@@ -1,0 +1,25 @@
+-- Completion slides, route log, counterfactual inputs, shift facts (additive).
+ALTER TABLE "CollectorShift" ADD COLUMN "chainMsLow" INTEGER;
+ALTER TABLE "CollectorShift" ADD COLUMN "chainMsHigh" INTEGER;
+ALTER TABLE "CollectorShift" ADD COLUMN "factsChains" INTEGER;
+ALTER TABLE "CollectorShift" ADD COLUMN "chainsUnknownEnd" INTEGER;
+ALTER TABLE "CollectorShift" ADD COLUMN "verifiedIdleMs" INTEGER;
+ALTER TABLE "CollectorShift" ADD COLUMN "onlineUnverifiedMs" INTEGER;
+ALTER TABLE "CollectorShift" ADD COLUMN "offlineMs" INTEGER;
+ALTER TABLE "CollectorShift" ADD COLUMN "unknownMs" INTEGER;
+ALTER TABLE "CollectorShift" ADD COLUMN "revenueAgorot" INTEGER;
+ALTER TABLE "CollectorShift" ADD COLUMN "completionSlides" INTEGER;
+ALTER TABLE "CollectorShift" ADD COLUMN "factsEndedAtUtc" DATETIME;
+ALTER TABLE "CollectorShift" ADD COLUMN "gpsPathKm" REAL;
+ALTER TABLE "CollectorShift" ADD COLUMN "gpsSpeedKm" REAL;
+ALTER TABLE "CollectorShift" ADD COLUMN "gpsDistanceReliable" BOOLEAN;
+ALTER TABLE "CollectorShift" ADD COLUMN "factsMissingJson" TEXT;
+ALTER TABLE "CollectorChain" ADD COLUMN "completionSlidesJson" TEXT;
+ALTER TABLE "CollectorChain" ADD COLUMN "routeChangesJson" TEXT;
+ALTER TABLE "CollectorChain" ADD COLUMN "markerMinutesJson" TEXT;
+ALTER TABLE "CollectorTrip" ADD COLUMN "cardDistanceKm" REAL;
+ALTER TABLE "CollectorTrip" ADD COLUMN "cardMinutes" INTEGER;
+ALTER TABLE "CollectorTrip" ADD COLUMN "routeBeforeAgeMs" INTEGER;
+ALTER TABLE "CollectorTrip" ADD COLUMN "incrementalMinutesUpper" REAL;
+ALTER TABLE "CollectorTrip" ADD COLUMN "incrementalMinutesWoltEta" REAL;
+ALTER TABLE "CollectorTrip" ADD COLUMN "estimateNotesJson" TEXT;
